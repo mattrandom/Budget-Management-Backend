@@ -1,7 +1,8 @@
 package io.mattrandom.controllers;
 
-import io.mattrandom.services.dtos.AssetsDto;
 import io.mattrandom.services.AssetsService;
+import io.mattrandom.services.dtos.AssetDto;
+import io.mattrandom.services.dtos.AssetsDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +18,13 @@ public class AssetsController {
         return assetsService.getAllAssets();
     }
 
-    @PostMapping("/{assetId}")
-    public void addAssets(@PathVariable Integer assetId) {
-        assetsService.addAsset(assetId);
+    @PostMapping
+    public void addAssets(@RequestBody AssetDto assetDto) {
+        assetsService.addAsset(assetDto);
+    }
+
+    @DeleteMapping
+    public void deleteAsset(@RequestBody AssetDto assetDto) {
+        assetsService.deleteAsset(assetDto);
     }
 }

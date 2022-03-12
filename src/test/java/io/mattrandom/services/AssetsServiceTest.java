@@ -3,6 +3,7 @@ package io.mattrandom.services;
 import io.mattrandom.mappers.AssetsMapper;
 import io.mattrandom.repositories.AssetsRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
+import io.mattrandom.services.dtos.AssetDto;
 import io.mattrandom.services.dtos.AssetsDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,16 +72,19 @@ class AssetsServiceTest {
     @Test
     void givenAssetEntity_whenAddAsset_thenSaveMethodShouldBeInvokedExactlyOneTime() {
         //given
-        int asset = 1;
+        BigDecimal asset = BigDecimal.ONE;
         AssetEntity assetEntity = AssetEntity.builder()
-                .amount(BigDecimal.valueOf(asset))
+                .amount(asset)
+                .build();
+
+        AssetDto assetDto = AssetDto.builder()
+                .amount(asset)
                 .build();
 
         //when
-        assetsService.addAsset(asset);
+        assetsService.addAsset(assetDto);
 
         //then
         then(assetsRepositoryMock).should(times(1)).save(assetEntity);
     }
-
 }
