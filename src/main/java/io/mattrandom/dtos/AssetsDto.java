@@ -13,5 +13,5 @@ import java.util.List;
 @EqualsAndHashCode
 public class AssetsDto {
 
-    private List<Integer> assets;
+    private List<Integer> assetsIds;
 }
