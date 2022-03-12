@@ -1,17 +1,16 @@
 package io.mattrandom.services;
 
 import io.mattrandom.enums.AssetValidatorEnum;
-import io.mattrandom.exceptions.AssertIncorrectException;
+import io.mattrandom.exceptions.AssetIncorrectException;
 import io.mattrandom.mappers.AssetsMapper;
 import io.mattrandom.repositories.AssetsRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.services.dtos.AssetDto;
 import io.mattrandom.services.dtos.AssetsDto;
-import io.mattrandom.validators.AssetsValidator;
+import io.mattrandom.validators.AssetValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -31,14 +30,14 @@ class AssetsServiceTest {
     private AssetsRepository assetsRepositoryMock;
 
     private final AssetsMapper assetsMapper = new AssetsMapper();
-    private final AssetsValidator assetsValidator = new AssetsValidator();
+    private final AssetValidator assetValidator = new AssetValidator();
 
     private AssetsService assetsService;
 
 
     @BeforeEach
     public void init() {
-        assetsService = new AssetsService(assetsRepositoryMock, assetsMapper, assetsValidator);
+        assetsService = new AssetsService(assetsRepositoryMock, assetsMapper, assetValidator);
     }
 
 
@@ -102,7 +101,7 @@ class AssetsServiceTest {
                 .build();
 
         //when
-        var assertIncorrectException = assertThrows(AssertIncorrectException.class, () -> assetsService.addAsset(assetDto));
+        var assertIncorrectException = assertThrows(AssetIncorrectException.class, () -> assetsService.addAsset(assetDto));
 
         //then
         assertThat(assertIncorrectException.getMessage()).isEqualTo(AssetValidatorEnum.ASSETS_AMOUNT_NOT_SPECIFIED.getReason());

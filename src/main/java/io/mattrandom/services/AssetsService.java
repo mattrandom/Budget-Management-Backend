@@ -5,7 +5,7 @@ import io.mattrandom.repositories.AssetsRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.services.dtos.AssetDto;
 import io.mattrandom.services.dtos.AssetsDto;
-import io.mattrandom.validators.AssetsValidator;
+import io.mattrandom.validators.AssetValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class AssetsService {
 
     private final AssetsRepository assetsRepository;
     private final AssetsMapper assetsMapper;
-    private final AssetsValidator assetsValidator;
+    private final AssetValidator assetValidator;
 
     public AssetsDto getAllAssets() {
         List<AssetEntity> fetchedAssets = assetsRepository.findAll();
@@ -33,7 +33,7 @@ public class AssetsService {
     }
 
     public void addAsset(AssetDto assetDto) {
-        assetsValidator.validate(assetDto);
+        assetValidator.validate(assetDto);
         AssetEntity assetEntity = assetsMapper.toEntity(assetDto);
         assetsRepository.save(assetEntity);
     }
