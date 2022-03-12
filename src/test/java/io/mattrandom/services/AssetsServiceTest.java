@@ -1,10 +1,13 @@
 package io.mattrandom.services;
 
+import io.mattrandom.enums.AssetValidatorEnum;
+import io.mattrandom.exceptions.AssertIncorrectException;
 import io.mattrandom.mappers.AssetsMapper;
 import io.mattrandom.repositories.AssetsRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.services.dtos.AssetDto;
 import io.mattrandom.services.dtos.AssetsDto;
+import io.mattrandom.validators.AssetsValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -27,12 +31,14 @@ class AssetsServiceTest {
     private AssetsRepository assetsRepositoryMock;
 
     private final AssetsMapper assetsMapper = new AssetsMapper();
+    private final AssetsValidator assetsValidator = new AssetsValidator();
 
     private AssetsService assetsService;
 
+
     @BeforeEach
     public void init() {
-        assetsService = new AssetsService(assetsRepositoryMock, assetsMapper);
+        assetsService = new AssetsService(assetsRepositoryMock, assetsMapper, assetsValidator);
     }
 
 
@@ -86,5 +92,20 @@ class AssetsServiceTest {
 
         //then
         then(assetsRepositoryMock).should(times(1)).save(assetEntity);
+    }
+
+    @Test
+    void given_when_then() {
+        //given
+        AssetDto assetDto = AssetDto.builder()
+                .amount(null)
+                .build();
+
+        //when
+        var assertIncorrectException = assertThrows(AssertIncorrectException.class, () -> assetsService.addAsset(assetDto));
+
+        //then
+        assertThat(assertIncorrectException.getMessage()).isEqualTo(AssetValidatorEnum.ASSETS_AMOUNT_NOT_SPECIFIED.getReason());
+
     }
 }
