@@ -4,6 +4,7 @@ import io.mattrandom.mappers.AssetsMapper;
 import io.mattrandom.repositories.AssetsRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.services.dtos.AssetsDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,18 +16,23 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class AssetsServiceTest {
 
     @Mock
-    private AssetsMapper assetsMapper;
-
-    @Mock
     private AssetsRepository assetsRepositoryMock;
 
-    @InjectMocks
+    private final AssetsMapper assetsMapper = new AssetsMapper();
+
     private AssetsService assetsService;
+
+    @BeforeEach
+    public void init() {
+        assetsService = new AssetsService(assetsRepositoryMock, assetsMapper);
+    }
 
 
     @Test
@@ -62,4 +68,19 @@ class AssetsServiceTest {
         assertThat(assets).hasSize(2);
         assertThat(assets).containsExactly(asset1, asset2);
     }
+    @Test
+    void givenAssetEntity_whenAddAsset_thenSaveMethodShouldBeInvokedExactlyOneTime() {
+        //given
+        int asset = 1;
+        AssetEntity assetEntity = AssetEntity.builder()
+                .amount(BigDecimal.valueOf(asset))
+                .build();
+
+        //when
+        assetsService.addAsset(asset);
+
+        //then
+        then(assetsRepositoryMock).should(times(1)).save(assetEntity);
+    }
+
 }
