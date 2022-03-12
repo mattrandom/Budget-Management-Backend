@@ -1,6 +1,6 @@
 package io.mattrandom.controllers;
 
-import io.mattrandom.dtos.AssetsDto;
+import io.mattrandom.services.dtos.AssetsDto;
 import io.mattrandom.services.AssetsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package io.mattrandom.dtos;
+package io.mattrandom.services.dtos;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

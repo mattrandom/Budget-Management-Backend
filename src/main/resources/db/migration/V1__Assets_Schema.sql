@@ -1,4 +1,4 @@
 CREATE TABLE `assets` (
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `amount` INT NOT NULL,
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `amount` NUMERIC NOT NULL,
 PRIMARY KEY (`id`));
