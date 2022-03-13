@@ -106,6 +106,7 @@ class AssetsServiceTest {
         //given
         AssetDto assetDto = AssetDto.builder()
                 .amount(null)
+                .incomeDate(LocalDateTime.now())
                 .build();
 
         //when
@@ -113,6 +114,23 @@ class AssetsServiceTest {
 
         //then
         assertThat(assertIncorrectException.getMessage()).isEqualTo(AssetValidatorEnum.ASSETS_AMOUNT_NOT_SPECIFIED.getReason());
+    }
+
+    @Test
+    void givenNullAmountAndIncomeDateValuesOfAssetDto_whenAddAsset_thenShouldThrowException() {
+        //given
+        AssetDto assetDto = AssetDto.builder()
+                .amount(null)
+                .incomeDate(null)
+                .build();
+
+        List<String> messages = List.of(AssetValidatorEnum.ASSETS_AMOUNT_NOT_SPECIFIED.getReason(), AssetValidatorEnum.ASSETS_INCOME_DATE_NOT_SPECIFIED.getReason());
+
+        //when
+        var assertIncorrectException = assertThrows(AssetIncorrectException.class, () -> assetsService.addAsset(assetDto));
+
+        //then
+        assertThat(assertIncorrectException.getMessage()).isEqualTo(String.join("; ", messages));
     }
 
     @Test
