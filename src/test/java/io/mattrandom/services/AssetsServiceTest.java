@@ -6,7 +6,6 @@ import io.mattrandom.mappers.AssetsMapper;
 import io.mattrandom.repositories.AssetsRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.services.dtos.AssetDto;
-import io.mattrandom.services.dtos.AssetsDto;
 import io.mattrandom.validators.AssetValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -44,36 +45,34 @@ class AssetsServiceTest {
     @Test
     void givenAssetEntity_whenFetchAllAssets_thenReturnListWithSingleAsset() {
         //given
-        int asset = 1;
-        AssetEntity assetEntity = new AssetEntity(1L, BigDecimal.valueOf(asset));
+        BigDecimal one = BigDecimal.ONE;
+        AssetEntity assetEntity = new AssetEntity(1L, one);
         given(assetsRepositoryMock.findAll()).willReturn(List.of(assetEntity));
 
         //when
-        AssetsDto result = assetsService.getAllAssets();
+        List<AssetDto> assetDtoResult = assetsService.getAllAssets();
 
         //then
-        List<Integer> assets = result.getAssetsIds();
-        assertThat(assets).hasSize(1);
-        assertThat(assets).containsExactly(asset);
+        assertThat(assetDtoResult).hasSize(1);
+        assertThat(assetDtoResult.get(0).getAmount()).isEqualTo(one);
     }
 
     @Test
     void givenTwoAssetsEntities_whenFetchAllAssets_thenReturnListWithTwoAssets() {
         //given
-        int asset1 = 1;
-        int asset2 = 10;
-        AssetEntity assetEntity = new AssetEntity(1L, BigDecimal.valueOf(asset1));
-        AssetEntity assetEntity2 = new AssetEntity(2L, BigDecimal.valueOf(asset2));
+        BigDecimal one = BigDecimal.ONE;
+        BigDecimal ten = BigDecimal.TEN;
+        AssetEntity assetEntity = new AssetEntity(1L, one);
+        AssetEntity assetEntity2 = new AssetEntity(2L, ten);
         given(assetsRepositoryMock.findAll()).willReturn(List.of(assetEntity, assetEntity2));
 
         //when
-        AssetsDto result = assetsService.getAllAssets();
+        List<AssetDto> assetDtoResult = assetsService.getAllAssets();
 
         //then
-        List<Integer> assets = result.getAssetsIds();
-        assertThat(assets).hasSize(2);
-        assertThat(assets).containsExactly(asset1, asset2);
+        assertThat(assetDtoResult).hasSize(2);
     }
+    
     @Test
     void givenAssetEntity_whenAddAsset_thenSaveMethodShouldBeInvokedExactlyOneTime() {
         //given
@@ -94,7 +93,7 @@ class AssetsServiceTest {
     }
 
     @Test
-    void given_when_then() {
+    void givenNullAmountValueOfAssetDto_whenAddAsset_thenShouldThrowException() {
         //given
         AssetDto assetDto = AssetDto.builder()
                 .amount(null)
@@ -105,6 +104,26 @@ class AssetsServiceTest {
 
         //then
         assertThat(assertIncorrectException.getMessage()).isEqualTo(AssetValidatorEnum.ASSETS_AMOUNT_NOT_SPECIFIED.getReason());
+    }
+
+    @Test
+    void givenAssetEntity_whenUpdateAsset_thenShouldCallSaveAndFlushMethod() {
+        //given
+        AssetEntity assetEntity = AssetEntity.builder()
+                .amount(BigDecimal.ONE)
+                .build();
+
+        AssetDto assetDto = AssetDto.builder()
+                .amount(BigDecimal.TEN)
+                .build();
+
+        given(assetsRepositoryMock.findById(any())).willReturn(Optional.of(assetEntity));
+
+        //when
+        assetsService.updateAsset(assetDto);
+
+        //then
+        then(assetsRepositoryMock).should(times(1)).saveAndFlush(assetEntity);
 
     }
 }
