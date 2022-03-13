@@ -1,4 +1,5 @@
-CREATE TABLE `assets` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `amount` NUMERIC NOT NULL,
-PRIMARY KEY (`id`));
+create TABLE assets (
+  id BIGINT AUTO_INCREMENT NOT NULL,
+   amount DECIMAL NULL,
+   CONSTRAINT pk_assets PRIMARY KEY (id)
+);

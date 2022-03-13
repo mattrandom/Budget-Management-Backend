@@ -22,6 +22,9 @@ public class AssetsMapper {
         if (Objects.nonNull(assetDto.getAmount())) {
             assetEntityBuilder.amount(assetDto.getAmount());
         }
+        if (Objects.nonNull(assetDto.getIncomeDate())) {
+            assetEntityBuilder.incomeDate(assetDto.getIncomeDate());
+        }
 
         return assetEntityBuilder.build();
     }
@@ -38,6 +41,9 @@ public class AssetsMapper {
         }
         if (Objects.nonNull(assetEntity.getAmount())) {
             assetDtoBuilder.amount(assetEntity.getAmount());
+        }
+        if (Objects.nonNull(assetEntity.getIncomeDate())) {
+            assetDtoBuilder.incomeDate(assetEntity.getIncomeDate());
         }
 
         return assetDtoBuilder.build();

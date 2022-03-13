@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,9 @@ class AssetsServiceTest {
     void givenAssetEntity_whenFetchAllAssets_thenReturnListWithSingleAsset() {
         //given
         BigDecimal one = BigDecimal.ONE;
-        AssetEntity assetEntity = new AssetEntity(1L, one);
+        AssetEntity assetEntity = AssetEntity.builder()
+                .amount(one)
+                .build();
         given(assetsRepositoryMock.findAll()).willReturn(List.of(assetEntity));
 
         //when
@@ -62,8 +65,12 @@ class AssetsServiceTest {
         //given
         BigDecimal one = BigDecimal.ONE;
         BigDecimal ten = BigDecimal.TEN;
-        AssetEntity assetEntity = new AssetEntity(1L, one);
-        AssetEntity assetEntity2 = new AssetEntity(2L, ten);
+        AssetEntity assetEntity = AssetEntity.builder()
+                .amount(one)
+                .build();
+        AssetEntity assetEntity2 = AssetEntity.builder()
+                .amount(ten)
+                .build();
         given(assetsRepositoryMock.findAll()).willReturn(List.of(assetEntity, assetEntity2));
 
         //when
@@ -79,10 +86,12 @@ class AssetsServiceTest {
         BigDecimal asset = BigDecimal.ONE;
         AssetEntity assetEntity = AssetEntity.builder()
                 .amount(asset)
+                .incomeDate(LocalDateTime.now())
                 .build();
 
         AssetDto assetDto = AssetDto.builder()
                 .amount(asset)
+                .incomeDate(LocalDateTime.now())
                 .build();
 
         //when
@@ -124,6 +133,20 @@ class AssetsServiceTest {
 
         //then
         then(assetsRepositoryMock).should(times(1)).saveAndFlush(assetEntity);
+    }
 
+    @Test
+    void givenNullIncomeDateValueOfAssetDto_whenAddAsset_thenShouldThrowException() {
+        //given
+        AssetDto assetDto = AssetDto.builder()
+                .amount(BigDecimal.ONE)
+                .incomeDate(null)
+                .build();
+
+        //when
+        var assertIncorrectException = assertThrows(AssetIncorrectException.class, () -> assetsService.addAsset(assetDto));
+
+        //then
+        assertThat(assertIncorrectException.getMessage()).isEqualTo(AssetValidatorEnum.ASSETS_INCOME_DATE_NOT_SPECIFIED.getReason());
     }
 }
