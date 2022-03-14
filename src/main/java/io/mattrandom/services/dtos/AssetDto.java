@@ -1,5 +1,6 @@
 package io.mattrandom.services.dtos;
 
+import io.mattrandom.enums.AssetCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,4 +18,5 @@ public class AssetDto {
     private Long id;
     private BigDecimal amount;
     private LocalDateTime incomeDate;
+    private AssetCategory assetCategory;
 }

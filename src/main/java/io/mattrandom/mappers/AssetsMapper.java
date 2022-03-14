@@ -25,6 +25,9 @@ public class AssetsMapper {
         if (Objects.nonNull(assetDto.getIncomeDate())) {
             assetEntityBuilder.incomeDate(assetDto.getIncomeDate());
         }
+        if (Objects.nonNull(assetDto.getAssetCategory())) {
+            assetEntityBuilder.assetCategory(assetDto.getAssetCategory());
+        }
 
         return assetEntityBuilder.build();
     }
@@ -44,6 +47,9 @@ public class AssetsMapper {
         }
         if (Objects.nonNull(assetEntity.getIncomeDate())) {
             assetDtoBuilder.incomeDate(assetEntity.getIncomeDate());
+        }
+        if (Objects.nonNull(assetEntity.getAssetCategory())) {
+            assetDtoBuilder.assetCategory(assetEntity.getAssetCategory());
         }
 
         return assetDtoBuilder.build();

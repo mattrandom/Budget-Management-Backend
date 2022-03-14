@@ -1,5 +1,6 @@
 package io.mattrandom.repositories.entities;
 
+import io.mattrandom.enums.AssetCategory;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,6 +25,8 @@ public class AssetEntity {
     private Long id;
     private BigDecimal amount;
     private LocalDateTime incomeDate;
+    @Enumerated(EnumType.STRING)
+    private AssetCategory assetCategory;
 
     @Override
     public boolean equals(Object o) {

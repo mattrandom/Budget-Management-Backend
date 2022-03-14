@@ -12,7 +12,7 @@ public class AssetValidator {
     public void validate(AssetDto assetDto) {
         MessageValidationGenerator messageValidationGenerator = firstValidatorInChain.messageChain(assetDto, new MessageValidationGenerator());
 
-        if (messageValidationGenerator.getErrorMessages().size() > 0 || messageValidationGenerator.getErrorCodes().size() >0) {
+        if (messageValidationGenerator.getErrorMessages().size() > 0 || messageValidationGenerator.getErrorCodes().size() > 0) {
             throw new AssetIncorrectException(
                     String.join("; ", messageValidationGenerator.getErrorMessages()),
                     String.join("; ", messageValidationGenerator.getErrorCodes())
