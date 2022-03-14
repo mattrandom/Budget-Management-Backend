@@ -59,6 +59,11 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -93,7 +98,7 @@
 					<user>root</user>
 					<password>admin</password>
 					<baselineOnMigrate>true</baselineOnMigrate>
-					<schemas>public</schemas>
+					<schemas>budget_management</schemas>
 					<locations>
 						<location>
 							filesystem:src/main/resources/db/migration
@@ -101,9 +106,6 @@
 					</locations>
 				</configuration>
 			</plugin>
-
-
 		</plugins>
 	</build>
-
 </project>

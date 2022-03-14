@@ -1,5 +1,6 @@
 package io.mattrandom.services;
 
+import io.mattrandom.enums.AssetCategory;
 import io.mattrandom.mappers.AssetsMapper;
 import io.mattrandom.repositories.AssetsRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
@@ -57,5 +58,12 @@ public class AssetsService {
             assetsRepository.saveAndFlush(assetEntityOpt);
         });
         log.info("Asset has just been updated!");
+    }
+
+    public List<AssetDto> getAllAssetsByCategory(AssetCategory assetCategory) {
+        List<AssetEntity> byAssetCategory = assetsRepository.findByAssetCategory(assetCategory);
+        return byAssetCategory.stream()
+                .map(assetsMapper::toDto)
+                .toList();
     }
 }
