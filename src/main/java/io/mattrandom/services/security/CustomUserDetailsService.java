@@ -1,4 +1,4 @@
-package io.mattrandom.services;
+package io.mattrandom.services.security;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
