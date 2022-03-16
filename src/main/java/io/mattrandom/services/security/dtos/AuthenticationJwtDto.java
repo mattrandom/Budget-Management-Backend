@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class AuthJwtDto {
+public class AuthenticationJwtDto {
 
     private final String jwt;
 }
