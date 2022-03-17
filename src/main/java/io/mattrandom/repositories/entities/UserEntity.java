@@ -1,11 +1,8 @@
 package io.mattrandom.repositories.entities;
 
-import io.mattrandom.enums.AssetCategory;
 import lombok.*;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -16,29 +13,26 @@ import java.util.Objects;
 @AllArgsConstructor
 
 @Entity
-@Table(name = "assets")
-public class AssetEntity {
+@Table(name = "users")
+public class UserEntity {
 
     @Id
     @Column(name = "id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private BigDecimal amount;
-    private LocalDateTime incomeDate;
-    @Column(length = 15)
-    @Enumerated(EnumType.STRING)
-    private AssetCategory assetCategory;
+    private String username;
+    private String password;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AssetEntity that = (AssetEntity) o;
-        return Objects.equals(id, that.id);
+        UserEntity that = (UserEntity) o;
+        return Objects.equals(username, that.username) && Objects.equals(password, that.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(username, password);
     }
 }

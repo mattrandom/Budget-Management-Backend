@@ -1,4 +1,4 @@
-package io.mattrandom.configurations;
+package io.mattrandom.configurations.security.filters;
 
 import io.mattrandom.services.security.JwtService;
 import lombok.RequiredArgsConstructor;
