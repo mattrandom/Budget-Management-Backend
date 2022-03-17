@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
-import static io.mattrandom.constants.SecurityConstants.JWT_PREFIX;
+import static io.mattrandom.enums.SecurityEnumConstants.JWT_PREFIX;
 
 @Service
 @RequiredArgsConstructor

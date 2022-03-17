@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import io.mattrandom.constants.SecurityConstants;
+import io.mattrandom.enums.SecurityEnumConstants;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +47,6 @@ public class JwtService {
     }
 
     private Algorithm getSHA256Algorithm() {
-        return Algorithm.HMAC256(SecurityConstants.JWT_SECRET.getConstant().getBytes());
+        return Algorithm.HMAC256(SecurityEnumConstants.JWT_SECRET.getConstant().getBytes());
     }
 }

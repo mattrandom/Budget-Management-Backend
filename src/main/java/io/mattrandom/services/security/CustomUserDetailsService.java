@@ -1,5 +1,7 @@
 package io.mattrandom.services.security;
 
+import io.mattrandom.exceptions.AppUserAlreadyExistException;
+import io.mattrandom.exceptions.AppUserNotFoundException;
 import io.mattrandom.mappers.UserMapper;
 import io.mattrandom.repositories.UserRepository;
 import io.mattrandom.repositories.entities.UserEntity;
@@ -10,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -23,13 +27,21 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Looking for User with username=" + username);
         return new CustomUserDetails(userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username + " not found in database")));
+                .orElseThrow(AppUserNotFoundException::new));
     }
 
     public Long saveUser(AuthenticationUserDto authenticationUserDto) {
+        checkIfUserExits(authenticationUserDto);
         UserEntity userEntity = userMapper.toEntity(authenticationUserDto);
         userRepository.save(userEntity);
         log.info("User saved = " + userEntity);
         return userEntity.getId();
+    }
+
+    private void checkIfUserExits(AuthenticationUserDto authenticationUserDto) {
+        Optional<UserEntity> findUserEntity = userRepository.findByUsername(authenticationUserDto.getUsername());
+        if (findUserEntity.isPresent()) {
+            throw new AppUserAlreadyExistException();
+        }
     }
 }
