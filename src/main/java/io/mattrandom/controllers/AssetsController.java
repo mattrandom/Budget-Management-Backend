@@ -6,7 +6,6 @@ import io.mattrandom.services.dtos.AssetDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -18,7 +17,7 @@ public class AssetsController {
 
     @GetMapping
     public List<AssetDto> getAllAssets() {
-        return assetsService.getAllAssets();
+        return assetsService.getAllAssetsByPrincipal();
     }
 
     @PostMapping

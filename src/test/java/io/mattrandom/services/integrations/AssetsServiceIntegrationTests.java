@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
-@WithMockUser(username = "usernameMock", password = "passMock")
+@WithMockUser(username = "principal", password = "pass")
 public class AssetsServiceIntegrationTests {
 
     @Autowired
@@ -36,10 +36,11 @@ public class AssetsServiceIntegrationTests {
     @Test
     void givenInitialStateOfDb_whenGetAllAssets_thenShouldReturnTwoObjects() {
         //given
-        assetEntitiesList();
+        initializingDbWithDefaultPrincipal();
+        initializingDbWithNotLoggedInUser();
 
         //when
-        List<AssetDto> allAssets = assetsService.getAllAssets();
+        List<AssetDto> allAssets = assetsService.getAllAssetsByPrincipal();
 
         //then
         assertThat(allAssets).hasSize(2);
@@ -65,14 +66,14 @@ public class AssetsServiceIntegrationTests {
         assertThat(entities.get(0).getAmount()).isEqualTo(assetDto.getAmount());
         assertThat(entities.get(0).getAssetCategory()).isEqualTo(assetDto.getAssetCategory());
         assertThat(entities.get(0).getIncomeDate()).isEqualTo(assetDto.getIncomeDate());
-        assertThat(entities.get(0).getUserEntity().getUsername()).isEqualTo("usernameMock");
+        assertThat(entities.get(0).getUserEntity().getUsername()).isEqualTo("principal");
 
     }
 
     @Test
     void givenSpecifiedAssetCategory_whenGetAllAssetsByCategory_thenReturnAssetsOnlyWithParticularCategory() {
         //given
-        assetEntitiesList();
+        initializingDbWithDefaultPrincipal();
         AssetCategory loanCategory = AssetCategory.LOAN_RETURN;
 
         //when
@@ -84,30 +85,59 @@ public class AssetsServiceIntegrationTests {
 
     }
 
-    private void assetEntitiesList() {
-        UserEntity user = saveMockedUserInDB();
+    private UserEntity saveMockedUserInDB() {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername("principal");
+        userEntity.setPassword("pass");
+        return userRepository.save(userEntity);
+    }
+
+    private void initializingDbWithDefaultPrincipal() {
+        UserEntity principal = saveMockedUserInDB();
 
         AssetEntity entity1 = AssetEntity.builder()
                 .amount(BigDecimal.valueOf(10))
                 .incomeDate(LocalDateTime.now())
                 .assetCategory(AssetCategory.OTHER)
-                .userEntity(user)
+                .userEntity(principal)
                 .build();
 
         AssetEntity entity2 = AssetEntity.builder()
                 .amount(BigDecimal.valueOf(20))
                 .incomeDate(LocalDateTime.now())
                 .assetCategory(AssetCategory.LOAN_RETURN)
-                .userEntity(user)
+                .userEntity(principal)
                 .build();
 
         assetsRepository.saveAll(List.of(entity1, entity2));
+
     }
 
-    private UserEntity saveMockedUserInDB() {
+    private UserEntity saveSecondMockedUserInDB() {
         UserEntity userEntity = new UserEntity();
-        userEntity.setUsername("usernameMock");
-        userEntity.setPassword("passMock");
+        userEntity.setUsername("notLoggedIn");
+        userEntity.setPassword("pass");
         return userRepository.save(userEntity);
+    }
+
+    private void initializingDbWithNotLoggedInUser() {
+        UserEntity principal = saveSecondMockedUserInDB();
+
+        AssetEntity entity1 = AssetEntity.builder()
+                .amount(BigDecimal.valueOf(10))
+                .incomeDate(LocalDateTime.now())
+                .assetCategory(AssetCategory.OTHER)
+                .userEntity(principal)
+                .build();
+
+        AssetEntity entity2 = AssetEntity.builder()
+                .amount(BigDecimal.valueOf(20))
+                .incomeDate(LocalDateTime.now())
+                .assetCategory(AssetCategory.LOAN_RETURN)
+                .userEntity(principal)
+                .build();
+
+        assetsRepository.saveAll(List.of(entity1, entity2));
+
     }
 }

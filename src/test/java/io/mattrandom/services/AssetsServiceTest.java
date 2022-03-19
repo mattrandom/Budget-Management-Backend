@@ -5,6 +5,7 @@ import io.mattrandom.exceptions.AssetIncorrectException;
 import io.mattrandom.mappers.AssetsMapper;
 import io.mattrandom.repositories.AssetsRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
+import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.AssetDto;
 import io.mattrandom.validators.AssetValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,13 +50,20 @@ class AssetsServiceTest {
     void givenAssetEntity_whenFetchAllAssets_thenReturnListWithSingleAsset() {
         //given
         BigDecimal one = BigDecimal.ONE;
+
+//        UserEntity userEntity = UserEntity.builder()
+//                .username("principal")
+//                .build();
+
         AssetEntity assetEntity = AssetEntity.builder()
                 .amount(one)
                 .build();
-        given(assetsRepositoryMock.findAll()).willReturn(List.of(assetEntity));
+
+        given(assetsRepositoryMock.findByUserEntity(any())).willReturn(List.of(assetEntity));
+//        given(userLoginService.getLoggedUserEntity()).willReturn(userEntity);
 
         //when
-        List<AssetDto> assetDtoResult = assetsService.getAllAssets();
+        List<AssetDto> assetDtoResult = assetsService.getAllAssetsByPrincipal();
 
         //then
         assertThat(assetDtoResult).hasSize(1);
@@ -67,16 +75,22 @@ class AssetsServiceTest {
         //given
         BigDecimal one = BigDecimal.ONE;
         BigDecimal ten = BigDecimal.TEN;
+
+//        UserEntity userEntity = UserEntity.builder()
+//                .username("principal")
+//                .build();
+
         AssetEntity assetEntity = AssetEntity.builder()
                 .amount(one)
                 .build();
         AssetEntity assetEntity2 = AssetEntity.builder()
                 .amount(ten)
                 .build();
-        given(assetsRepositoryMock.findAll()).willReturn(List.of(assetEntity, assetEntity2));
+        given(assetsRepositoryMock.findByUserEntity(any())).willReturn(List.of(assetEntity, assetEntity2));
+//        given(userLoginService.getLoggedUserEntity()).willReturn(userEntity);
 
         //when
-        List<AssetDto> assetDtoResult = assetsService.getAllAssets();
+        List<AssetDto> assetDtoResult = assetsService.getAllAssetsByPrincipal();
 
         //then
         assertThat(assetDtoResult).hasSize(2);

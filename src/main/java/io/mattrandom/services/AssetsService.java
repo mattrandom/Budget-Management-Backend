@@ -6,7 +6,6 @@ import io.mattrandom.repositories.AssetsRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.AssetDto;
-import io.mattrandom.services.security.dtos.PlainAuthenticationUserDto;
 import io.mattrandom.validators.AssetValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +24,12 @@ public class AssetsService {
     private final AssetValidator assetValidator;
     private final UserLoginService userLoginService;
 
-    public List<AssetDto> getAllAssets() {
-        log.debug("Getting all Assets");
-        List<AssetEntity> assetEntities = assetsRepository.findAll();
+    public List<AssetDto> getAllAssetsByPrincipal() {
+        log.debug("Getting all Assets of currently logged in User principal");
+
+        UserEntity principal = getUserEntity();
+
+        List<AssetEntity> assetEntities = assetsRepository.findByUserEntity(principal);
         return assetEntities.stream()
                 .map(assetsMapper::toDto)
                 .toList();
