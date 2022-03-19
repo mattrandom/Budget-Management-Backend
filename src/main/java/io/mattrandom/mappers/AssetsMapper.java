@@ -1,7 +1,9 @@
 package io.mattrandom.mappers;
 
 import io.mattrandom.repositories.entities.AssetEntity;
+import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.AssetDto;
+import io.mattrandom.services.security.dtos.PlainAuthenticationUserDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -9,7 +11,7 @@ import java.util.Objects;
 @Component
 public class AssetsMapper {
 
-    public AssetEntity toEntity(AssetDto assetDto) {
+    public AssetEntity toEntity(AssetDto assetDto, UserEntity userEntity) {
         if (Objects.isNull(assetDto)) {
             return null;
         }
@@ -27,6 +29,9 @@ public class AssetsMapper {
         }
         if (Objects.nonNull(assetDto.getAssetCategory())) {
             assetEntityBuilder.assetCategory(assetDto.getAssetCategory());
+        }
+        if (Objects.nonNull(userEntity)) {
+            assetEntityBuilder.userEntity(userEntity);
         }
 
         return assetEntityBuilder.build();
@@ -51,6 +56,12 @@ public class AssetsMapper {
         if (Objects.nonNull(assetEntity.getAssetCategory())) {
             assetDtoBuilder.assetCategory(assetEntity.getAssetCategory());
         }
+//        if (Objects.nonNull(assetEntity.getUserEntity())) {
+//            assetDtoBuilder.user(PlainAuthenticationUserDto.builder()
+//                    .id(assetEntity.getUserEntity().getId())
+//                    .username(assetEntity.getUserEntity().getUsername())
+//                    .build());
+//        }
 
         return assetDtoBuilder.build();
     }

@@ -30,6 +30,8 @@ class AssetsServiceTest {
 
     @Mock
     private AssetsRepository assetsRepositoryMock;
+    @Mock
+    private UserLoginService userLoginService;
 
     private final AssetsMapper assetsMapper = new AssetsMapper();
     private final AssetValidator assetValidator = new AssetValidator();
@@ -39,7 +41,7 @@ class AssetsServiceTest {
 
     @BeforeEach
     public void init() {
-        assetsService = new AssetsService(assetsRepositoryMock, assetsMapper, assetValidator);
+        assetsService = new AssetsService(assetsRepositoryMock, assetsMapper, assetValidator, userLoginService);
     }
 
 

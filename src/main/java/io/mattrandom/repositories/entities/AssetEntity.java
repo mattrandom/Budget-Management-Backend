@@ -11,7 +11,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @Builder
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 
@@ -25,20 +24,36 @@ public class AssetEntity {
     private Long id;
     private BigDecimal amount;
     private LocalDateTime incomeDate;
+
     @Column(length = 15)
     @Enumerated(EnumType.STRING)
     private AssetCategory assetCategory;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity userEntity;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AssetEntity that = (AssetEntity) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(id, that.id) && Objects.equals(userEntity, that.userEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, userEntity);
+    }
+
+    @Override
+    public String toString() {
+        return "AssetEntity{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", incomeDate=" + incomeDate +
+                ", assetCategory=" + assetCategory +
+                ", userEntity=" + userEntity +
+                '}';
     }
 }

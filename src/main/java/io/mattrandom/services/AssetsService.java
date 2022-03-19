@@ -4,7 +4,9 @@ import io.mattrandom.enums.AssetCategory;
 import io.mattrandom.mappers.AssetsMapper;
 import io.mattrandom.repositories.AssetsRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
+import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.AssetDto;
+import io.mattrandom.services.security.dtos.PlainAuthenticationUserDto;
 import io.mattrandom.validators.AssetValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ public class AssetsService {
     private final AssetsRepository assetsRepository;
     private final AssetsMapper assetsMapper;
     private final AssetValidator assetValidator;
+    private final UserLoginService userLoginService;
 
     public List<AssetDto> getAllAssets() {
         log.debug("Getting all Assets");
@@ -34,7 +37,8 @@ public class AssetsService {
         log.info("Adding single Asset");
         log.debug("AssetDto: " + assetDto);
         assetValidator.validate(assetDto);
-        AssetEntity assetEntity = assetsMapper.toEntity(assetDto);
+        UserEntity userEntity = getUserEntity();
+        AssetEntity assetEntity = assetsMapper.toEntity(assetDto, userEntity);
 
         assetsRepository.save(assetEntity);
         log.info("Asset has just been saved!");
@@ -43,7 +47,8 @@ public class AssetsService {
     public void deleteAsset(AssetDto assetDto) {
         log.info("Deleting single Asset");
         log.debug("AssetDto: " + assetDto);
-        AssetEntity assetEntity = assetsMapper.toEntity(assetDto);
+        UserEntity userEntity = getUserEntity();
+        AssetEntity assetEntity = assetsMapper.toEntity(assetDto, userEntity);
 
         assetsRepository.delete(assetEntity);
         log.info("Asset has just been deleted!");
@@ -65,5 +70,10 @@ public class AssetsService {
         return byAssetCategory.stream()
                 .map(assetsMapper::toDto)
                 .toList();
+    }
+
+    private UserEntity getUserEntity() {
+        log.info("Fetching logged entity User");
+        return userLoginService.getLoggedUserEntity();
     }
 }

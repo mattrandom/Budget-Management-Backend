@@ -1,6 +1,7 @@
 package io.mattrandom.services.dtos;
 
 import io.mattrandom.enums.AssetCategory;
+import io.mattrandom.services.security.dtos.PlainAuthenticationUserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,4 +20,6 @@ public class AssetDto {
     private BigDecimal amount;
     private LocalDateTime incomeDate;
     private AssetCategory assetCategory;
+
+//    private PlainAuthenticationUserDto user;
 }
