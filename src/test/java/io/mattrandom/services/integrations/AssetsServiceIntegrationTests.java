@@ -16,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -82,7 +85,37 @@ public class AssetsServiceIntegrationTests {
         //then
         assertThat(allAssetsByCategory).hasSize(1);
         assertThat(allAssetsByCategory.get(0).getAssetCategory()).isEqualTo(loanCategory);
+    }
 
+    @Test
+    void givenUsersWithAssets_whenDeletingAssetsByUser_thenTotalAmountOfAssetsIsReduced() {
+        //given
+        initializingDbWithDefaultPrincipal();
+        initializingDbWithNotLoggedInUser();
+
+        List<UserEntity> userEntities = StreamSupport.stream(userRepository.findAll().spliterator(), false).toList();
+        UserEntity user = userEntities.stream().findFirst().get();
+        UserEntity userPrincipal = userEntities.stream().filter(userEntity -> userEntity.equals(user)).findFirst().get();
+
+        List<AssetEntity> assetsBeforeDeletingByUser = assetsRepository.findAll();
+        assertThat(assetsBeforeDeletingByUser).hasSize(4);
+        Set<String> usernamesBeforeDeleting = assetsBeforeDeletingByUser.stream()
+                .map(assetEntity -> assetEntity.getUserEntity().getUsername())
+                .collect(Collectors.toSet());
+        assertThat(usernamesBeforeDeleting).hasSize(2);
+
+        //when
+        assetsService.deleteAssetsByUser(userPrincipal);
+
+        //then
+        List<AssetEntity> assetsAfterDeletingByUser = assetsRepository.findAll();
+        assertThat(assetsAfterDeletingByUser).hasSize(2);
+
+        Set<String> usernamesAfterDeleting = assetsAfterDeletingByUser.stream()
+                .map(assetEntity -> assetEntity.getUserEntity().getUsername())
+                .collect(Collectors.toSet());
+        assertThat(usernamesAfterDeleting).hasSize(1);
+        assertThat(assetsAfterDeletingByUser.get(1).getUserEntity()).isNotEqualTo(userPrincipal);
     }
 
     private UserEntity saveMockedUserInDB() {

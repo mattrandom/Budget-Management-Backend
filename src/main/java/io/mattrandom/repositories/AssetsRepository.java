@@ -14,4 +14,6 @@ public interface AssetsRepository extends JpaRepository<AssetEntity, Long> {
     List<AssetEntity> findByAssetCategory(AssetCategory assetCategory);
 
     List<AssetEntity> findByUserEntity(UserEntity userEntity);
+
+    void deleteByUserEntity(UserEntity userEntity);
 }

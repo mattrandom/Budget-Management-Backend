@@ -74,6 +74,10 @@ public class AssetsService {
                 .toList();
     }
 
+    public void deleteAssetsByUser(UserEntity userEntity) {
+        assetsRepository.deleteByUserEntity(userEntity);
+    }
+
     private UserEntity getUserEntity() {
         log.info("Fetching logged entity User");
         return userLoginService.getLoggedUserEntity();
