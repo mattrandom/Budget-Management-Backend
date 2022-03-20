@@ -25,7 +25,7 @@ public class AssetsService {
     private final UserLoginService userLoginService;
 
     public List<AssetDto> getAllAssetsByPrincipal() {
-        log.debug("Getting all Assets of currently logged in User principal");
+        log.debug("Getting all Assets of the currently logged in principal user");
 
         UserEntity principal = getUserEntity();
 
