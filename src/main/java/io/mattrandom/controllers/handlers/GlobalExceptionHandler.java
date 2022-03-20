@@ -1,6 +1,7 @@
 package io.mattrandom.controllers.handlers;
 
 import io.mattrandom.controllers.handlers.dtos.ErrorResponse;
+import io.mattrandom.exceptions.AppUserInvalidCredentialsException;
 import io.mattrandom.exceptions.AssetIncorrectException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,5 +15,11 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public ErrorResponse assetIncorrectExceptionHandler(AssetIncorrectException assetIncorrectException) {
         return new ErrorResponse(HttpStatus.METHOD_NOT_ALLOWED.value(), assetIncorrectException.getMessage(), assetIncorrectException.getErrorCode());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse appUserInvalidCredentialsExceptionHandler(AppUserInvalidCredentialsException ex) {
+        return new ErrorResponse(HttpStatus.FORBIDDEN.value(), ex.getMessage(), "ac0f60c0-591d-4d44-9604-45d3ccf5610c");
     }
 }
