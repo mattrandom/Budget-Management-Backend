@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class AssetsService {
 
     private final AssetsRepository assetsRepository;

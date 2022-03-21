@@ -28,7 +28,7 @@ public class ExpenseEntity {
     @Enumerated(EnumType.STRING)
     private ExpenseCategory expenseCategory;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
