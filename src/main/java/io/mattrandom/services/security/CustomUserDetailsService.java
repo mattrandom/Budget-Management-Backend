@@ -5,6 +5,8 @@ import io.mattrandom.exceptions.AppUserNotFoundException;
 import io.mattrandom.mappers.UserMapper;
 import io.mattrandom.repositories.UserRepository;
 import io.mattrandom.repositories.entities.UserEntity;
+import io.mattrandom.services.AssetsService;
+import io.mattrandom.services.UserLoginService;
 import io.mattrandom.services.security.dtos.AuthenticationUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -22,6 +25,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final AssetsService assetsService;
+    private final UserLoginService userLoginService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -36,6 +41,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         userRepository.save(userEntity);
         log.info("User saved = " + userEntity);
         return userEntity.getId();
+    }
+
+    @Transactional
+    public void deleteUser() {
+        UserEntity loggedUserEntity = userLoginService.getLoggedUserEntity();
+        assetsService.deleteAssetsByUser(loggedUserEntity);
+        userRepository.delete(loggedUserEntity);
     }
 
     private void checkIfUserExits(AuthenticationUserDto authenticationUserDto) {

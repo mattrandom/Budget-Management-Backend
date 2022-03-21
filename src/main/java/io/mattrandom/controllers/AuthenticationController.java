@@ -26,4 +26,10 @@ public class AuthenticationController {
     public ResponseEntity<Long> saveUser(@RequestBody AuthenticationUserDto authenticationUserDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(customUserDetailsService.saveUser(authenticationUserDto));
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteUser() {
+        customUserDetailsService.deleteUser();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
