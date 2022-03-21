@@ -113,4 +113,17 @@ public abstract class AbstractIntegrationTestSchema {
         ExpenseEntity savedEntity = expenseRepository.save(expenseEntity);
         return savedEntity.getId();
     }
+
+    protected Long initializingExpenseDB(UserEntity userEntity, String datePrefix) {
+        String dateSuffix = "T00:00:00.00";
+        ExpenseEntity expenseEntity = ExpenseEntity.builder()
+                .amount(BigDecimal.TEN)
+                .expenseDate(LocalDateTime.parse(datePrefix + dateSuffix))
+                .expenseCategory(ExpenseCategory.ENTERTAINMENT)
+                .userEntity(userEntity)
+                .build();
+
+        ExpenseEntity savedEntity = expenseRepository.save(expenseEntity);
+        return savedEntity.getId();
+    }
 }

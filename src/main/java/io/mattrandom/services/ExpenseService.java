@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -46,6 +47,17 @@ public class ExpenseService {
         expenseEntity.ifPresent(entity -> checkAndUpdate(expenseDto, expenseEntity.get()));
         return expenseMapper.toDto(expenseEntity.get());
 
+    }
+
+    public List<ExpenseDto> getExpensesByDateBetween(String dateFromPrefix, String dateToPrefix) {
+        UserEntity loggedUserEntity = userLoginService.getLoggedUserEntity();
+
+        String dateSuffix = "T00:00:00.00";
+        LocalDateTime dateFrom = LocalDateTime.parse(dateFromPrefix + dateSuffix);
+        LocalDateTime dateTo = LocalDateTime.parse(dateToPrefix + dateSuffix);
+
+        List<ExpenseEntity> byExpenseDateBetween = expenseRepository.findByExpenseDateBetween(loggedUserEntity, dateFrom, dateTo);
+        return expenseMapper.toDtos(byExpenseDateBetween);
     }
 
     private void checkAndUpdate(ExpenseDto expenseDto, ExpenseEntity expenseEntity) {

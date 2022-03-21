@@ -21,6 +21,11 @@ public class ExpenseController {
         return ResponseEntity.status(HttpStatus.OK).body(expenseService.getAllExpenses());
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<List<ExpenseDto>> getAllExpensesByDateBetween(@RequestParam String from, @RequestParam String to) {
+        return ResponseEntity.status(HttpStatus.OK).body(expenseService.getExpensesByDateBetween(from, to));
+    }
+
     @PostMapping
     public ResponseEntity<ExpenseDto> addExpense(@RequestBody ExpenseDto expenseDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(expenseService.addExpense(expenseDto));

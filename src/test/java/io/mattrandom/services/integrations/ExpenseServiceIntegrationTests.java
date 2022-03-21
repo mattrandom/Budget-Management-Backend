@@ -102,4 +102,22 @@ public class ExpenseServiceIntegrationTests extends AbstractIntegrationTestSchem
         //then
         assertThat(allExpenses).hasSize(2);
     }
+
+    @Test
+    void givenExpenseObjects_whenGetExpensesByDateBetween_thenShouldReturnObjects() {
+        //given
+        UserEntity user = saveMockedUserInDB();
+        initializingExpenseDB(user, "2022-01-05");
+        initializingExpenseDB(user, "2022-02-05");
+        initializingExpenseDB(user, "2022-03-05");
+        initializingExpenseDB(user, "2022-04-05");
+        initializingExpenseDB(user, "2022-05-05");
+        initializingExpenseDB(user, "2022-06-05");
+
+        //when
+        List<ExpenseDto> allExpenses = expenseService.getExpensesByDateBetween("2022-02-05", "2022-05-05");
+
+        //then
+        assertThat(allExpenses).hasSize(4);
+    }
 }
