@@ -1,17 +1,10 @@
 package io.mattrandom.services.integrations;
 
 import io.mattrandom.enums.ExpenseCategory;
-import io.mattrandom.repositories.ExpenseRepository;
-import io.mattrandom.repositories.UserRepository;
 import io.mattrandom.repositories.entities.ExpenseEntity;
 import io.mattrandom.repositories.entities.UserEntity;
-import io.mattrandom.services.ExpenseService;
 import io.mattrandom.services.dtos.ExpenseDto;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,19 +12,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Transactional
-@SpringBootTest
-@WithMockUser(username = "principal", password = "pass")
-public class ExpenseServiceIntegrationTests {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ExpenseRepository expenseRepository;
-
-    @Autowired
-    private ExpenseService expenseService;
+public class ExpenseServiceIntegrationTests extends AbstractIntegrationTestSchema {
 
     @Test
     void givenExpenseObject_whenAddExpense_thenShouldSaveObjectIntoDB() {
@@ -58,10 +39,10 @@ public class ExpenseServiceIntegrationTests {
         //given
         UserEntity savedUserEntity = saveMockedUserInDB();
 
-        ExpenseEntity savedExpenseEntity = initializingExpenseDB(savedUserEntity);
+        Long savedExpenseEntity = initializingExpenseDB(savedUserEntity);
 
         ExpenseDto expenseDto = ExpenseDto.builder()
-                .id(savedExpenseEntity.getId())
+                .id(savedExpenseEntity)
                 .amount(BigDecimal.TEN)
                 .expenseDate(LocalDateTime.now())
                 .expenseCategory(ExpenseCategory.ENTERTAINMENT)
@@ -79,22 +60,20 @@ public class ExpenseServiceIntegrationTests {
         assertThat(fetchedExpenseEntityListAfterDeleting.size()).isEqualTo(0);
     }
 
-
-
     @Test
     void givenExpenseObject_whenUpdateExpense_thenShouldUpdateObjectInDB() {
         //given
         UserEntity savedUserEntity = saveMockedUserInDB();
-        ExpenseEntity savedExpenseEntity = initializingExpenseDB(savedUserEntity);
+        Long savedExpenseEntity = initializingExpenseDB(savedUserEntity);
 
         ExpenseDto expenseDto = ExpenseDto.builder()
-                .id(savedUserEntity.getId())
+                .id(savedExpenseEntity)
                 .amount(BigDecimal.ONE)
                 .expenseDate(LocalDateTime.now())
                 .expenseCategory(ExpenseCategory.PERSONAL_DEVELOPMENT)
                 .build();
 
-        ExpenseEntity fetchedExpenseEntityById = expenseRepository.findById(savedExpenseEntity.getId()).get();
+        ExpenseEntity fetchedExpenseEntityById = expenseRepository.findById(savedExpenseEntity).get();
         assertThat(fetchedExpenseEntityById.getAmount()).isEqualTo(BigDecimal.TEN);
         assertThat(fetchedExpenseEntityById.getExpenseCategory()).isEqualTo(ExpenseCategory.ENTERTAINMENT);
 
@@ -102,7 +81,7 @@ public class ExpenseServiceIntegrationTests {
         expenseService.updateExpense(expenseDto);
 
         //then
-        ExpenseEntity expenseEntityAfterUpdating = expenseRepository.findById(savedExpenseEntity.getId()).get();
+        ExpenseEntity expenseEntityAfterUpdating = expenseRepository.findById(savedExpenseEntity).get();
         assertThat(expenseEntityAfterUpdating.getAmount()).isEqualTo(BigDecimal.ONE);
         assertThat(expenseEntityAfterUpdating.getExpenseCategory()).isEqualTo(ExpenseCategory.PERSONAL_DEVELOPMENT);
     }
@@ -122,30 +101,5 @@ public class ExpenseServiceIntegrationTests {
 
         //then
         assertThat(allExpenses).hasSize(2);
-    }
-
-
-    private ExpenseEntity initializingExpenseDB(UserEntity userEntity) {
-        ExpenseEntity expenseEntity = ExpenseEntity.builder()
-                .amount(BigDecimal.TEN)
-                .expenseDate(LocalDateTime.now())
-                .expenseCategory(ExpenseCategory.ENTERTAINMENT)
-                .userEntity(userEntity)
-                .build();
-        return expenseRepository.save(expenseEntity);
-    }
-
-    private UserEntity saveMockedUserInDB() {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername("principal");
-        userEntity.setPassword("pass");
-        return userRepository.save(userEntity);
-    }
-
-    private UserEntity saveSecondMockedUserInDB() {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername("notLoggedIn");
-        userEntity.setPassword("pass");
-        return userRepository.save(userEntity);
     }
 }

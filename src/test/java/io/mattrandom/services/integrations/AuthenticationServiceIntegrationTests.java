@@ -3,29 +3,14 @@ package io.mattrandom.services.integrations;
 import io.mattrandom.enums.AuthenticationEnum;
 import io.mattrandom.exceptions.AppUserInvalidCredentialsException;
 import io.mattrandom.services.security.AuthenticationService;
-import io.mattrandom.services.security.CustomUserDetailsService;
-import io.mattrandom.services.security.JwtService;
 import io.mattrandom.services.security.dtos.AuthenticationUserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@Transactional
-@SpringBootTest
-class AuthenticationServiceIntegrationTests {
-
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
-    @Autowired
-    private AuthenticationManager authenticationManager;
+class AuthenticationServiceIntegrationTests extends AbstractIntegrationTestSchema {
 
     private AuthenticationService authenticationService;
 
@@ -37,8 +22,7 @@ class AuthenticationServiceIntegrationTests {
     @Test
     void givenWrongUsername_whenAuthenticatingCredentials_thenThrowException() {
         //given
-
-        getValidUser();
+        initializingDbWithDefaultPrincipal();
 
         AuthenticationUserDto wrongUsernameAuthentication = new AuthenticationUserDto();
         wrongUsernameAuthentication.setUsername("bad_credential");
@@ -54,8 +38,7 @@ class AuthenticationServiceIntegrationTests {
     @Test
     void givenWrongPassword_whenAuthenticatingCredentials_thenThrowException() {
         //given
-
-        getValidUser();
+        initializingDbWithDefaultPrincipal();
 
         AuthenticationUserDto wrongUsernameAuthentication = new AuthenticationUserDto();
         wrongUsernameAuthentication.setUsername("principal");
@@ -67,15 +50,4 @@ class AuthenticationServiceIntegrationTests {
         //then
         assertThat(result.getMessage()).isEqualTo(AuthenticationEnum.USER_INVALID_CREDENTIALS.getMessage());
     }
-
-    private void getValidUser() {
-        AuthenticationUserDto authenticationUserDto = new AuthenticationUserDto();
-        authenticationUserDto.setUsername("principal");
-        authenticationUserDto.setPassword("pass");
-
-        customUserDetailsService.saveUser(authenticationUserDto);
-
-    }
-
-
 }

@@ -4,20 +4,13 @@ import io.mattrandom.enums.AssetCategory;
 import io.mattrandom.enums.AuthenticationEnum;
 import io.mattrandom.exceptions.AppUserAlreadyExistException;
 import io.mattrandom.exceptions.AppUserNotFoundException;
-import io.mattrandom.repositories.AssetsRepository;
-import io.mattrandom.repositories.UserRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.repositories.entities.UserEntity;
-import io.mattrandom.services.security.CustomUserDetailsService;
 import io.mattrandom.services.security.dtos.AuthenticationUserDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,20 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@Transactional
-@SpringBootTest
-@WithMockUser(username = "login", password = "pass")
-class CustomUserDetailsServiceIntegrationTests {
-
-    private static final String USER_LOGIN = "login";
-    private static final String USER_PASSWORD = "pass";
-
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
-    @Autowired
-    private AssetsRepository assetsRepository;
+class CustomUserDetailsServiceIntegrationTests extends AbstractIntegrationTestSchema {
 
     @Test
     @DisplayName("Should return from DB UserDetails with given credentials")
@@ -50,11 +30,11 @@ class CustomUserDetailsServiceIntegrationTests {
         initDBWithUser();
 
         //when
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(USER_LOGIN);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(PRINCIPAL_LOGIN);
 
         //then
-        assertThat(userDetails.getUsername()).isEqualTo(USER_LOGIN);
-        assertThat(userDetails.getPassword()).isEqualTo(USER_PASSWORD);
+        assertThat(userDetails.getUsername()).isEqualTo(PRINCIPAL_LOGIN);
+        assertThat(userDetails.getPassword()).isEqualTo(PRINCIPAL_PASSWORD);
     }
 
     @Test
@@ -62,8 +42,8 @@ class CustomUserDetailsServiceIntegrationTests {
     void givenUserDtoObject_whenSavingUser_thenCredentialsShouldHaveProperValues() {
         //given
         AuthenticationUserDto dto = new AuthenticationUserDto();
-        dto.setUsername(USER_LOGIN);
-        dto.setPassword(USER_PASSWORD);
+        dto.setUsername(PRINCIPAL_LOGIN);
+        dto.setPassword(PRINCIPAL_PASSWORD);
 
         //when
         Long userDetailsID = customUserDetailsService.saveUser(dto);
@@ -73,7 +53,7 @@ class CustomUserDetailsServiceIntegrationTests {
         assertThat(userDetailsID).isEqualTo(userEntity.getId());
 
         assertAll(
-                () -> assertThat(userEntity.getUsername()).isEqualTo(USER_LOGIN),
+                () -> assertThat(userEntity.getUsername()).isEqualTo(PRINCIPAL_LOGIN),
                 () -> assertThat(userEntity.getPassword()).contains(hashPasswordAndGetCommonSubstring()),
                 () -> assertThat(userEntity.getPassword()).matches(checkRegexPattern())
         );
@@ -99,8 +79,8 @@ class CustomUserDetailsServiceIntegrationTests {
         //given
         initDBWithUser();
         AuthenticationUserDto dto = new AuthenticationUserDto();
-        dto.setUsername(USER_LOGIN);
-        dto.setPassword(USER_PASSWORD);
+        dto.setUsername(PRINCIPAL_LOGIN);
+        dto.setPassword(PRINCIPAL_PASSWORD);
 
         //when
         AppUserAlreadyExistException alreadyExist = assertThrows(AppUserAlreadyExistException.class,
@@ -131,7 +111,7 @@ class CustomUserDetailsServiceIntegrationTests {
     void givenPrincipalWitAssets_whenDeletingUserWithAssets_thenNoContent() {
         //given
         initDBWithUser();
-        UserEntity fetchedUser = userRepository.findByUsername(USER_LOGIN).get();
+        UserEntity fetchedUser = userRepository.findByUsername(PRINCIPAL_LOGIN).get();
 
         initDBWithAssetsAndRelatedUser(fetchedUser);
 
@@ -156,8 +136,8 @@ class CustomUserDetailsServiceIntegrationTests {
 
     private void initDBWithUser() {
         UserEntity user = UserEntity.builder()
-                .username(USER_LOGIN)
-                .password(USER_PASSWORD)
+                .username(PRINCIPAL_LOGIN)
+                .password(PRINCIPAL_PASSWORD)
                 .build();
 
         userRepository.save(user);
@@ -175,7 +155,7 @@ class CustomUserDetailsServiceIntegrationTests {
     }
 
     private String hashPasswordAndGetCommonSubstring() {
-        return BCrypt.hashpw(USER_PASSWORD, BCrypt.gensalt()).substring(0, 7);
+        return BCrypt.hashpw(PRINCIPAL_PASSWORD, BCrypt.gensalt()).substring(0, 7);
     }
 
     private Pattern checkRegexPattern() {
