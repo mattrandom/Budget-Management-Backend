@@ -1,19 +1,29 @@
 package io.mattrandom.services.integrations;
 
 import io.mattrandom.enums.ExpenseCategory;
+import io.mattrandom.enums.ExpenseMessageEnum;
 import io.mattrandom.enums.FilterExpensesConditionsEnum;
 import io.mattrandom.enums.MonthSpecificationEnum;
+import io.mattrandom.exceptions.ExpenseFilterQueryParamException;
 import io.mattrandom.repositories.entities.ExpenseEntity;
 import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.ExpenseDto;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ExpenseServiceIntegrationTests extends AbstractIntegrationTestSchema {
 
@@ -148,5 +158,52 @@ public class ExpenseServiceIntegrationTests extends AbstractIntegrationTestSchem
 
         //then
         assertThat(allExpenses).hasSize(4);
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("notSpecifiedOneOfFilterParams")
+    void given_when_then(String name, ParameterData data) {
+        //given
+        //when
+        ExpenseFilterQueryParamException result = assertThrows(ExpenseFilterQueryParamException.class, () -> expenseService.getExpensesByFilteredConditions(data.getConditions()));
+
+        //then
+        assertThat(result.getMessage()).isEqualTo(ExpenseMessageEnum.NO_FILTER_PARAM_KEY.getMessage() + data.getNotSpecifiedQueryParam().getQueryParamKey());
+
+    }
+
+    private static Stream<Arguments> notSpecifiedOneOfFilterParams() {
+        return Stream.of(
+                Arguments.of("Test case for not specified query param: " + FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey(),
+                        new ParameterData(
+                                Map.of(FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey(), "2022-02-05"),
+                                FilterExpensesConditionsEnum.DATE_TO)
+                ),
+
+                Arguments.of("Test case for not specified query param: " + FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey(),
+                        new ParameterData(
+                                Map.of(FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey(), "2022-02-05"),
+                                FilterExpensesConditionsEnum.DATE_FROM)
+                ),
+
+                Arguments.of("Test case for not specified query param: " + FilterExpensesConditionsEnum.MONTH.getQueryParamKey(),
+                        new ParameterData(
+                                Map.of(FilterExpensesConditionsEnum.YEAR.getQueryParamKey(), "2022"),
+                                FilterExpensesConditionsEnum.MONTH)
+                ),
+
+                Arguments.of("Test case for not specified query param: " + FilterExpensesConditionsEnum.YEAR.getQueryParamKey(),
+                        new ParameterData(
+                                Map.of(FilterExpensesConditionsEnum.MONTH.getQueryParamKey(), "april"),
+                                FilterExpensesConditionsEnum.YEAR)
+                )
+        );
+    }
+
+    @Getter
+    @AllArgsConstructor
+    private static class ParameterData {
+        private Map<String, String> conditions;
+        private FilterExpensesConditionsEnum notSpecifiedQueryParam;
     }
 }
