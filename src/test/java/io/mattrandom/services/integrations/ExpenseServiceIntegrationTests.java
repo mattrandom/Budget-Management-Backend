@@ -1,6 +1,8 @@
 package io.mattrandom.services.integrations;
 
 import io.mattrandom.enums.ExpenseCategory;
+import io.mattrandom.enums.FilterExpensesConditionsEnum;
+import io.mattrandom.enums.MonthSpecificationEnum;
 import io.mattrandom.repositories.entities.ExpenseEntity;
 import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.ExpenseDto;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -104,7 +107,7 @@ public class ExpenseServiceIntegrationTests extends AbstractIntegrationTestSchem
     }
 
     @Test
-    void givenExpenseObjects_whenGetExpensesByDateBetween_thenShouldReturnObjects() {
+    void givenExpenseObjects_whenGetExpensesByDateBetweenFromToConditions_thenShouldReturnObjects() {
         //given
         UserEntity user = saveMockedUserInDB();
         initializingExpenseDB(user, "2022-01-05");
@@ -115,7 +118,33 @@ public class ExpenseServiceIntegrationTests extends AbstractIntegrationTestSchem
         initializingExpenseDB(user, "2022-06-05");
 
         //when
-        List<ExpenseDto> allExpenses = expenseService.getExpensesByDateBetween("2022-02-05", "2022-05-05");
+        Map<String, String> fromToConditions = Map.of(
+                FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey(), "2022-02-05",
+                FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey(), "2022-05-05"
+        );
+        List<ExpenseDto> allExpenses = expenseService.getExpensesByFilteredConditions(fromToConditions);
+
+        //then
+        assertThat(allExpenses).hasSize(4);
+    }
+
+    @Test
+    void givenExpenseObjects_whenGetMonthlyExpensesByGivenYear_thenShouldReturnObjects() {
+        //given
+        UserEntity user = saveMockedUserInDB();
+        initializingExpenseDB(user, "2022-01-05");
+        initializingExpenseDB(user, "2022-04-01");
+        initializingExpenseDB(user, "2022-04-05");
+        initializingExpenseDB(user, "2022-04-15");
+        initializingExpenseDB(user, "2022-04-30");
+        initializingExpenseDB(user, "2022-06-05");
+
+        //when
+        Map<String, String> yearMonthConditions = Map.of(
+                FilterExpensesConditionsEnum.MONTH.getQueryParamKey(), MonthSpecificationEnum.APRIL.name(),
+                FilterExpensesConditionsEnum.YEAR.getQueryParamKey(), "2022"
+        );
+        List<ExpenseDto> allExpenses = expenseService.getExpensesByFilteredConditions(yearMonthConditions);
 
         //then
         assertThat(allExpenses).hasSize(4);

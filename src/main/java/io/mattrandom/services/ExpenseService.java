@@ -1,5 +1,7 @@
 package io.mattrandom.services;
 
+import io.mattrandom.enums.FilterExpensesConditionsEnum;
+import io.mattrandom.enums.MonthSpecificationEnum;
 import io.mattrandom.mappers.ExpenseMapper;
 import io.mattrandom.repositories.ExpenseRepository;
 import io.mattrandom.repositories.entities.ExpenseEntity;
@@ -10,9 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +49,29 @@ public class ExpenseService {
 
     }
 
-    public List<ExpenseDto> getExpensesByDateBetween(String dateFromPrefix, String dateToPrefix) {
+    public List<ExpenseDto> getExpensesByFilteredConditions(Map<String, String> conditions) {
+        if (conditions.containsKey(FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey())) {
+            return getExpensesByDateBetween(
+                    conditions.get(FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey()),
+                    conditions.get(FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey()));
+
+        } else if (conditions.containsKey(FilterExpensesConditionsEnum.YEAR.getQueryParamKey())) {
+            MonthSpecificationEnum month = MonthSpecificationEnum.valueOf(conditions.get(FilterExpensesConditionsEnum.MONTH.getQueryParamKey()).toUpperCase());
+            String year = conditions.get(FilterExpensesConditionsEnum.YEAR.getQueryParamKey());
+            return getMonthlyExpensesByGivenYear(month, year);
+        }
+
+        return Collections.emptyList();
+    }
+
+    private List<ExpenseDto> getMonthlyExpensesByGivenYear(MonthSpecificationEnum month, String year) {
+        String dateFrom = month.getFirstDayOfGivenMonthAndYear(year);
+        String dateTo = month.getLastDayOfGivenMonthAndYear(year);
+
+        return getExpensesByDateBetween(dateFrom, dateTo);
+    }
+
+    private List<ExpenseDto> getExpensesByDateBetween(String dateFromPrefix, String dateToPrefix) {
         UserEntity loggedUserEntity = userLoginService.getLoggedUserEntity();
 
         String dateSuffix = "T00:00:00.00";

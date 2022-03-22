@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -22,8 +23,8 @@ public class ExpenseController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<ExpenseDto>> getAllExpensesByDateBetween(@RequestParam String from, @RequestParam String to) {
-        return ResponseEntity.status(HttpStatus.OK).body(expenseService.getExpensesByDateBetween(from, to));
+    public ResponseEntity<List<ExpenseDto>> getAllExpensesByDateBetween(@RequestParam Map<String, String> conditions) {
+        return ResponseEntity.status(HttpStatus.OK).body(expenseService.getExpensesByFilteredConditions(conditions));
     }
 
     @PostMapping
