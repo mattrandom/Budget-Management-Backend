@@ -1,14 +1,13 @@
 package io.mattrandom.services;
 
-import io.mattrandom.enums.ExpenseMessageEnum;
 import io.mattrandom.enums.FilterExpensesConditionsEnum;
 import io.mattrandom.enums.MonthSpecificationEnum;
-import io.mattrandom.exceptions.ExpenseFilterQueryParamException;
 import io.mattrandom.mappers.ExpenseMapper;
 import io.mattrandom.repositories.ExpenseRepository;
 import io.mattrandom.repositories.entities.ExpenseEntity;
 import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.ExpenseDto;
+import io.mattrandom.validators.QueryParamFilterValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +22,7 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final ExpenseMapper expenseMapper;
     private final UserLoginService userLoginService;
+    private final QueryParamFilterValidator queryParamFilterValidator;
 
     public List<ExpenseDto> getAllExpenses() {
         UserEntity user = userLoginService.getLoggedUserEntity();
@@ -52,6 +52,8 @@ public class ExpenseService {
     }
 
     public List<ExpenseDto> getExpensesByFilteredConditions(Map<String, String> conditions) {
+        queryParamFilterValidator.chooseFilter(conditions);
+
         if (isFromToQueryParamConditionsFound(conditions)) {
             return getExpensesByDateBetween(
                     conditions.get(FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey()),
@@ -67,33 +69,13 @@ public class ExpenseService {
     }
 
     private boolean isFromToQueryParamConditionsFound(Map<String, String> conditions) {
-        if (conditions.containsKey(FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey())
-                && !conditions.containsKey(FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey())) {
-            throw new ExpenseFilterQueryParamException(getExceptionMessage(FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey()), "07b1969f-519f-494e-af7f-69f73eb92503");
-        }
-        if (conditions.containsKey(FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey())
-                && !conditions.containsKey(FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey())) {
-            throw new ExpenseFilterQueryParamException(getExceptionMessage(FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey()), "41eead82-8d83-4999-a4f7-e4b6157a66c0");
-        }
         return conditions.containsKey(FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey())
                 && conditions.containsKey(FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey());
     }
 
     private boolean isMonthYearQueryParamConditionsFound(Map<String, String> conditions) {
-        if (conditions.containsKey(FilterExpensesConditionsEnum.YEAR.getQueryParamKey())
-                && !conditions.containsKey(FilterExpensesConditionsEnum.MONTH.getQueryParamKey())) {
-            throw new ExpenseFilterQueryParamException(getExceptionMessage(FilterExpensesConditionsEnum.MONTH.getQueryParamKey()), "7d0a3cf5-0d6e-4a53-900d-8c4077edec19");
-        }
-        if (conditions.containsKey(FilterExpensesConditionsEnum.MONTH.getQueryParamKey())
-                && !conditions.containsKey(FilterExpensesConditionsEnum.YEAR.getQueryParamKey())) {
-            throw new ExpenseFilterQueryParamException(getExceptionMessage(FilterExpensesConditionsEnum.YEAR.getQueryParamKey()), "6601ed1c-0931-461c-a3cd-609e97d6b123");
-        }
         return conditions.containsKey(FilterExpensesConditionsEnum.YEAR.getQueryParamKey())
                 && conditions.containsKey(FilterExpensesConditionsEnum.MONTH.getQueryParamKey());
-    }
-
-    private String getExceptionMessage(String missingQueryParam) {
-        return ExpenseMessageEnum.NO_FILTER_PARAM_KEY.getMessage() + missingQueryParam;
     }
 
     private List<ExpenseDto> getMonthlyExpensesByGivenYear(MonthSpecificationEnum month, String year) {

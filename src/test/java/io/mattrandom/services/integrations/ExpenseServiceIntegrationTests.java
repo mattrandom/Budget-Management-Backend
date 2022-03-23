@@ -10,7 +10,6 @@ import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.ExpenseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -168,7 +167,7 @@ public class ExpenseServiceIntegrationTests extends AbstractIntegrationTestSchem
         ExpenseFilterQueryParamException result = assertThrows(ExpenseFilterQueryParamException.class, () -> expenseService.getExpensesByFilteredConditions(data.getConditions()));
 
         //then
-        assertThat(result.getMessage()).isEqualTo(ExpenseMessageEnum.NO_FILTER_PARAM_KEY.getMessage() + data.getNotSpecifiedQueryParam().getQueryParamKey());
+        assertThat(result.getMessage()).isEqualTo(ExpenseMessageEnum.NO_FILTER_PARAM_KEY.getMessage(data.getNotSpecifiedQueryParam().getQueryParamKey()));
 
     }
 
