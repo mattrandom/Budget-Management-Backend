@@ -1,19 +1,19 @@
 package io.mattrandom.services;
 
-import io.mattrandom.enums.FilterExpensesConditionsEnum;
-import io.mattrandom.enums.MonthSpecificationEnum;
 import io.mattrandom.mappers.ExpenseMapper;
 import io.mattrandom.repositories.ExpenseRepository;
 import io.mattrandom.repositories.entities.ExpenseEntity;
 import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.ExpenseDto;
-import io.mattrandom.validators.QueryParamFilterValidator;
+import io.mattrandom.validators.FilterSpecificRepositoryAbstract;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +22,7 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final ExpenseMapper expenseMapper;
     private final UserLoginService userLoginService;
-    private final QueryParamFilterValidator queryParamFilterValidator;
+    private final FilterSpecificRepositoryAbstract filterSpecificRepository;
 
     public List<ExpenseDto> getAllExpenses() {
         UserEntity user = userLoginService.getLoggedUserEntity();
@@ -52,48 +52,10 @@ public class ExpenseService {
     }
 
     public List<ExpenseDto> getExpensesByFilteredConditions(Map<String, String> conditions) {
-        queryParamFilterValidator.chooseFilter(conditions);
-
-        if (isFromToQueryParamConditionsFound(conditions)) {
-            return getExpensesByDateBetween(
-                    conditions.get(FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey()),
-                    conditions.get(FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey()));
-
-        } else if (isMonthYearQueryParamConditionsFound(conditions)) {
-            MonthSpecificationEnum month = MonthSpecificationEnum.valueOf(conditions.get(FilterExpensesConditionsEnum.MONTH.getQueryParamKey()).toUpperCase());
-            String year = conditions.get(FilterExpensesConditionsEnum.YEAR.getQueryParamKey());
-            return getMonthlyExpensesByGivenYear(month, year);
-        }
-
-        return Collections.emptyList();
-    }
-
-    private boolean isFromToQueryParamConditionsFound(Map<String, String> conditions) {
-        return conditions.containsKey(FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey())
-                && conditions.containsKey(FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey());
-    }
-
-    private boolean isMonthYearQueryParamConditionsFound(Map<String, String> conditions) {
-        return conditions.containsKey(FilterExpensesConditionsEnum.YEAR.getQueryParamKey())
-                && conditions.containsKey(FilterExpensesConditionsEnum.MONTH.getQueryParamKey());
-    }
-
-    private List<ExpenseDto> getMonthlyExpensesByGivenYear(MonthSpecificationEnum month, String year) {
-        String dateFrom = month.getFirstDayOfGivenMonthAndYear(year);
-        String dateTo = month.getLastDayOfGivenMonthAndYear(year);
-
-        return getExpensesByDateBetween(dateFrom, dateTo);
-    }
-
-    private List<ExpenseDto> getExpensesByDateBetween(String dateFromPrefix, String dateToPrefix) {
         UserEntity loggedUserEntity = userLoginService.getLoggedUserEntity();
+        List<ExpenseEntity> allFilteredExpenses = filterSpecificRepository.getAllFilteredData(loggedUserEntity, conditions);
 
-        String dateSuffix = "T00:00:00.00";
-        LocalDateTime dateFrom = LocalDateTime.parse(dateFromPrefix + dateSuffix);
-        LocalDateTime dateTo = LocalDateTime.parse(dateToPrefix + dateSuffix);
-
-        List<ExpenseEntity> byExpenseDateBetween = expenseRepository.findByExpenseDateBetween(loggedUserEntity, dateFrom, dateTo);
-        return expenseMapper.toDtos(byExpenseDateBetween);
+        return expenseMapper.toDtos(allFilteredExpenses);
     }
 
     private void checkAndUpdate(ExpenseDto expenseDto, ExpenseEntity expenseEntity) {

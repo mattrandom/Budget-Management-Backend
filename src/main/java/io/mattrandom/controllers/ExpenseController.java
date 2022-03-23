@@ -23,7 +23,7 @@ public class ExpenseController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<ExpenseDto>> getAllExpensesByDateBetween(@RequestParam Map<String, String> conditions) {
+    public ResponseEntity<List<ExpenseDto>> getExpensesByFilteredConditions(@RequestParam Map<String, String> conditions) {
         return ResponseEntity.status(HttpStatus.OK).body(expenseService.getExpensesByFilteredConditions(conditions));
     }
 

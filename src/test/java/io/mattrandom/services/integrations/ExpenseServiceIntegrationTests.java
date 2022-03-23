@@ -163,6 +163,7 @@ public class ExpenseServiceIntegrationTests extends AbstractIntegrationTestSchem
     @MethodSource("notSpecifiedOneOfFilterParams")
     void given_when_then(String name, ParameterData data) {
         //given
+        UserEntity user = saveMockedUserInDB();
         //when
         ExpenseFilterQueryParamException result = assertThrows(ExpenseFilterQueryParamException.class, () -> expenseService.getExpensesByFilteredConditions(data.getConditions()));
 

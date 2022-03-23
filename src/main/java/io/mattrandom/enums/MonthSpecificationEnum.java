@@ -28,8 +28,4 @@ public enum MonthSpecificationEnum {
     public String getLastDayOfGivenMonthAndYear(String year) {
         return year + "-" + this.monthNumber + "-" + this.maxNumberOfDays;
     }
-
-    public String getFirstDayOfGivenMonthAndYear(MonthSpecificationEnum month, String year) {
-        return year + "-" + month.monthNumber + "-01";
-    }
 }
