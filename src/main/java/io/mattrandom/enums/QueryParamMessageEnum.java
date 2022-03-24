@@ -3,7 +3,7 @@ package io.mattrandom.enums;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum ExpenseMessageEnum {
+public enum QueryParamMessageEnum {
 
     NO_FILTER_PARAM_KEY("Not specified query parameter for filtering expenses: ");
 

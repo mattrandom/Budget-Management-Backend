@@ -5,7 +5,7 @@ import io.mattrandom.exceptions.AppUserNotFoundException;
 import io.mattrandom.mappers.UserMapper;
 import io.mattrandom.repositories.UserRepository;
 import io.mattrandom.repositories.entities.UserEntity;
-import io.mattrandom.services.AssetsService;
+import io.mattrandom.services.AssetService;
 import io.mattrandom.services.UserLoginService;
 import io.mattrandom.services.security.dtos.AuthenticationUserDto;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final AssetsService assetsService;
+    private final AssetService assetService;
     private final UserLoginService userLoginService;
 
     @Override
@@ -46,7 +46,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
     public void deleteUser() {
         UserEntity loggedUserEntity = userLoginService.getLoggedUserEntity();
-        assetsService.deleteAssetsByUser(loggedUserEntity);
+        assetService.deleteAssetsByUser(loggedUserEntity);
         userRepository.delete(loggedUserEntity);
     }
 

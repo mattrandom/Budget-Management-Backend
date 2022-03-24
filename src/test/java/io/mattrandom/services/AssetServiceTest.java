@@ -2,12 +2,12 @@ package io.mattrandom.services;
 
 import io.mattrandom.enums.AssetValidatorEnum;
 import io.mattrandom.exceptions.AssetIncorrectException;
-import io.mattrandom.mappers.AssetsMapper;
-import io.mattrandom.repositories.AssetsRepository;
+import io.mattrandom.mappers.AssetMapper;
+import io.mattrandom.repositories.AssetRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
-import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.AssetDto;
 import io.mattrandom.validators.AssetValidator;
+import io.mattrandom.validators.filters.FilterSpecificRepositoryAbstract;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,22 +27,24 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class AssetsServiceTest {
+class AssetServiceTest {
 
     @Mock
-    private AssetsRepository assetsRepositoryMock;
+    private AssetRepository assetRepositoryMock;
     @Mock
     private UserLoginService userLoginService;
+    @Mock
+    private FilterSpecificRepositoryAbstract<AssetEntity> filterSpecificRepository;
 
-    private final AssetsMapper assetsMapper = new AssetsMapper();
+    private final AssetMapper assetMapper = new AssetMapper();
     private final AssetValidator assetValidator = new AssetValidator();
 
-    private AssetsService assetsService;
+    private AssetService assetService;
 
 
     @BeforeEach
     public void init() {
-        assetsService = new AssetsService(assetsRepositoryMock, assetsMapper, assetValidator, userLoginService);
+        assetService = new AssetService(assetRepositoryMock, assetMapper, assetValidator, userLoginService, filterSpecificRepository);
     }
 
 
@@ -59,11 +61,11 @@ class AssetsServiceTest {
                 .amount(one)
                 .build();
 
-        given(assetsRepositoryMock.findByUserEntity(any())).willReturn(List.of(assetEntity));
+        given(assetRepositoryMock.findByUserEntity(any())).willReturn(List.of(assetEntity));
 //        given(userLoginService.getLoggedUserEntity()).willReturn(userEntity);
 
         //when
-        List<AssetDto> assetDtoResult = assetsService.getAllAssetsByPrincipal();
+        List<AssetDto> assetDtoResult = assetService.getAllAssetsByPrincipal();
 
         //then
         assertThat(assetDtoResult).hasSize(1);
@@ -86,11 +88,11 @@ class AssetsServiceTest {
         AssetEntity assetEntity2 = AssetEntity.builder()
                 .amount(ten)
                 .build();
-        given(assetsRepositoryMock.findByUserEntity(any())).willReturn(List.of(assetEntity, assetEntity2));
+        given(assetRepositoryMock.findByUserEntity(any())).willReturn(List.of(assetEntity, assetEntity2));
 //        given(userLoginService.getLoggedUserEntity()).willReturn(userEntity);
 
         //when
-        List<AssetDto> assetDtoResult = assetsService.getAllAssetsByPrincipal();
+        List<AssetDto> assetDtoResult = assetService.getAllAssetsByPrincipal();
 
         //then
         assertThat(assetDtoResult).hasSize(2);
@@ -111,10 +113,10 @@ class AssetsServiceTest {
                 .build();
 
         //when
-        assetsService.addAsset(assetDto);
+        assetService.addAsset(assetDto);
 
         //then
-        then(assetsRepositoryMock).should(times(1)).save(assetEntity);
+        then(assetRepositoryMock).should(times(1)).save(assetEntity);
     }
 
     @Test
@@ -126,7 +128,7 @@ class AssetsServiceTest {
                 .build();
 
         //when
-        var assertIncorrectException = assertThrows(AssetIncorrectException.class, () -> assetsService.addAsset(assetDto));
+        var assertIncorrectException = assertThrows(AssetIncorrectException.class, () -> assetService.addAsset(assetDto));
 
         //then
         assertThat(assertIncorrectException.getMessage()).isEqualTo(AssetValidatorEnum.ASSETS_AMOUNT_NOT_SPECIFIED.getReason());
@@ -143,7 +145,7 @@ class AssetsServiceTest {
         List<String> messages = List.of(AssetValidatorEnum.ASSETS_AMOUNT_NOT_SPECIFIED.getReason(), AssetValidatorEnum.ASSETS_INCOME_DATE_NOT_SPECIFIED.getReason());
 
         //when
-        var assertIncorrectException = assertThrows(AssetIncorrectException.class, () -> assetsService.addAsset(assetDto));
+        var assertIncorrectException = assertThrows(AssetIncorrectException.class, () -> assetService.addAsset(assetDto));
 
         //then
         assertThat(assertIncorrectException.getMessage()).isEqualTo(String.join("; ", messages));
@@ -160,13 +162,13 @@ class AssetsServiceTest {
                 .amount(BigDecimal.TEN)
                 .build();
 
-        given(assetsRepositoryMock.findById(any())).willReturn(Optional.of(assetEntity));
+        given(assetRepositoryMock.findById(any())).willReturn(Optional.of(assetEntity));
 
         //when
-        assetsService.updateAsset(assetDto);
+        assetService.updateAsset(assetDto);
 
         //then
-        then(assetsRepositoryMock).should(times(1)).saveAndFlush(assetEntity);
+        then(assetRepositoryMock).should(times(1)).saveAndFlush(assetEntity);
     }
 
     @Test
@@ -178,7 +180,7 @@ class AssetsServiceTest {
                 .build();
 
         //when
-        var assertIncorrectException = assertThrows(AssetIncorrectException.class, () -> assetsService.addAsset(assetDto));
+        var assertIncorrectException = assertThrows(AssetIncorrectException.class, () -> assetService.addAsset(assetDto));
 
         //then
         assertThat(assertIncorrectException.getMessage()).isEqualTo(AssetValidatorEnum.ASSETS_INCOME_DATE_NOT_SPECIFIED.getReason());

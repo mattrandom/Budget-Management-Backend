@@ -1,6 +1,6 @@
 package io.mattrandom.validators;
 
-import io.mattrandom.enums.FilterExpensesConditionsEnum;
+import io.mattrandom.enums.QueryParamConditionsEnum;
 
 import java.util.Map;
 
@@ -14,30 +14,30 @@ public abstract class QueryParamFilterValidator {
     }
 
     private void verifyLackOfToKeyQueryParamURL(Map<String, String> conditions, String errorCode) {
-        if (conditions.containsKey(FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey())
-                && !conditions.containsKey(FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey())) {
-            throwProperException(FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey(), errorCode);
+        if (conditions.containsKey(QueryParamConditionsEnum.DATE_FROM.getQueryParamKey())
+                && !conditions.containsKey(QueryParamConditionsEnum.DATE_TO.getQueryParamKey())) {
+            throwProperException(QueryParamConditionsEnum.DATE_TO.getQueryParamKey(), errorCode);
         }
     }
 
     private void verifyLackOfFromKeyQueryParamURL(Map<String, String> conditions, String errorCode) {
-        if (conditions.containsKey(FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey())
-                && !conditions.containsKey(FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey())) {
-            throwProperException(FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey(), errorCode);
+        if (conditions.containsKey(QueryParamConditionsEnum.DATE_TO.getQueryParamKey())
+                && !conditions.containsKey(QueryParamConditionsEnum.DATE_FROM.getQueryParamKey())) {
+            throwProperException(QueryParamConditionsEnum.DATE_FROM.getQueryParamKey(), errorCode);
         }
     }
 
     private void verifyLackOfMonthKeyQueryParamURL(Map<String, String> conditions, String errorCode) {
-        if (conditions.containsKey(FilterExpensesConditionsEnum.YEAR.getQueryParamKey())
-                && !conditions.containsKey(FilterExpensesConditionsEnum.MONTH.getQueryParamKey())) {
-            throwProperException(FilterExpensesConditionsEnum.MONTH.getQueryParamKey(), errorCode);
+        if (conditions.containsKey(QueryParamConditionsEnum.YEAR.getQueryParamKey())
+                && !conditions.containsKey(QueryParamConditionsEnum.MONTH.getQueryParamKey())) {
+            throwProperException(QueryParamConditionsEnum.MONTH.getQueryParamKey(), errorCode);
         }
     }
 
     private void verifyLackOfYearKeyQueryParamURL(Map<String, String> conditions, String errorCode) {
-        if (conditions.containsKey(FilterExpensesConditionsEnum.MONTH.getQueryParamKey())
-                && !conditions.containsKey(FilterExpensesConditionsEnum.YEAR.getQueryParamKey())) {
-            throwProperException(FilterExpensesConditionsEnum.YEAR.getQueryParamKey(), errorCode);
+        if (conditions.containsKey(QueryParamConditionsEnum.MONTH.getQueryParamKey())
+                && !conditions.containsKey(QueryParamConditionsEnum.YEAR.getQueryParamKey())) {
+            throwProperException(QueryParamConditionsEnum.YEAR.getQueryParamKey(), errorCode);
         }
     }
 

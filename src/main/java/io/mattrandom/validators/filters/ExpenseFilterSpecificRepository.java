@@ -1,4 +1,4 @@
-package io.mattrandom.validators;
+package io.mattrandom.validators.filters;
 
 import io.mattrandom.repositories.ExpenseRepository;
 import io.mattrandom.repositories.entities.ExpenseEntity;
@@ -11,12 +11,12 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ExpenseFilterSpecificRepository extends FilterSpecificRepositoryAbstract {
+public class ExpenseFilterSpecificRepository extends FilterSpecificRepositoryAbstract<ExpenseEntity> {
 
     private final ExpenseRepository expenseRepository;
 
     @Override
-    protected List<ExpenseEntity> getExpensesByDateBetween(UserEntity user, LocalDateTime dateFom, LocalDateTime dateTo) {
+    protected List<ExpenseEntity> getResultsFromProperRepositoryByDateBetween(UserEntity user, LocalDateTime dateFom, LocalDateTime dateTo) {
         return expenseRepository.findByExpenseDateBetween(user, dateFom, dateTo);
     }
 }

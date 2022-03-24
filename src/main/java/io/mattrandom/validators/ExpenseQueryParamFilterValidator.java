@@ -1,6 +1,6 @@
 package io.mattrandom.validators;
 
-import io.mattrandom.enums.ExpenseMessageEnum;
+import io.mattrandom.enums.QueryParamMessageEnum;
 import io.mattrandom.exceptions.ExpenseFilterQueryParamException;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ public class ExpenseQueryParamFilterValidator extends QueryParamFilterValidator 
     public void throwProperException(String missingQueryParamKey, String errorCode) {
 
         throw new ExpenseFilterQueryParamException(
-                ExpenseMessageEnum.NO_FILTER_PARAM_KEY.getMessage(missingQueryParamKey),
+                QueryParamMessageEnum.NO_FILTER_PARAM_KEY.getMessage(missingQueryParamKey),
                 errorCode
         );
     }

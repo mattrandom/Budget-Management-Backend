@@ -118,7 +118,7 @@ class CustomUserDetailsServiceIntegrationTests extends AbstractIntegrationTestSc
         Iterable<UserEntity> users = userRepository.findAll();
         assertThat(users).hasSize(1);
 
-        List<AssetEntity> assets = assetsRepository.findAll();
+        List<AssetEntity> assets = assetRepository.findAll();
         assertThat(assets).hasSize(1);
         assertThat(assets.get(0).getUserEntity()).isEqualTo(fetchedUser);
 
@@ -129,7 +129,7 @@ class CustomUserDetailsServiceIntegrationTests extends AbstractIntegrationTestSc
         Iterable<UserEntity> checkUserDbAfterRemoving = userRepository.findAll();
         assertThat(checkUserDbAfterRemoving).hasSize(0);
 
-        List<AssetEntity> checkAssetsDbAfterRemoving = assetsRepository.findAll();
+        List<AssetEntity> checkAssetsDbAfterRemoving = assetRepository.findAll();
         assertThat(checkAssetsDbAfterRemoving).hasSize(0);
     }
 
@@ -151,7 +151,7 @@ class CustomUserDetailsServiceIntegrationTests extends AbstractIntegrationTestSc
                 .userEntity(userEntity)
                 .build();
 
-        assetsRepository.save(assetEntity);
+        assetRepository.save(assetEntity);
     }
 
     private String hashPasswordAndGetCommonSubstring() {

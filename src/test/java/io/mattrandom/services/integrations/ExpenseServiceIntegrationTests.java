@@ -1,8 +1,8 @@
 package io.mattrandom.services.integrations;
 
 import io.mattrandom.enums.ExpenseCategory;
-import io.mattrandom.enums.ExpenseMessageEnum;
-import io.mattrandom.enums.FilterExpensesConditionsEnum;
+import io.mattrandom.enums.QueryParamMessageEnum;
+import io.mattrandom.enums.QueryParamConditionsEnum;
 import io.mattrandom.enums.MonthSpecificationEnum;
 import io.mattrandom.exceptions.ExpenseFilterQueryParamException;
 import io.mattrandom.repositories.entities.ExpenseEntity;
@@ -128,8 +128,8 @@ public class ExpenseServiceIntegrationTests extends AbstractIntegrationTestSchem
 
         //when
         Map<String, String> fromToConditions = Map.of(
-                FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey(), "2022-02-05",
-                FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey(), "2022-05-05"
+                QueryParamConditionsEnum.DATE_FROM.getQueryParamKey(), "2022-02-05",
+                QueryParamConditionsEnum.DATE_TO.getQueryParamKey(), "2022-05-05"
         );
         List<ExpenseDto> allExpenses = expenseService.getExpensesByFilteredConditions(fromToConditions);
 
@@ -150,8 +150,8 @@ public class ExpenseServiceIntegrationTests extends AbstractIntegrationTestSchem
 
         //when
         Map<String, String> yearMonthConditions = Map.of(
-                FilterExpensesConditionsEnum.MONTH.getQueryParamKey(), MonthSpecificationEnum.APRIL.name(),
-                FilterExpensesConditionsEnum.YEAR.getQueryParamKey(), "2022"
+                QueryParamConditionsEnum.MONTH.getQueryParamKey(), MonthSpecificationEnum.APRIL.name(),
+                QueryParamConditionsEnum.YEAR.getQueryParamKey(), "2022"
         );
         List<ExpenseDto> allExpenses = expenseService.getExpensesByFilteredConditions(yearMonthConditions);
 
@@ -161,49 +161,49 @@ public class ExpenseServiceIntegrationTests extends AbstractIntegrationTestSchem
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("notSpecifiedOneOfFilterParams")
-    void given_when_then(String name, ParameterData data) {
+    void given_when_then(String name, ExpenseParameterData data) {
         //given
         UserEntity user = saveMockedUserInDB();
         //when
         ExpenseFilterQueryParamException result = assertThrows(ExpenseFilterQueryParamException.class, () -> expenseService.getExpensesByFilteredConditions(data.getConditions()));
 
         //then
-        assertThat(result.getMessage()).isEqualTo(ExpenseMessageEnum.NO_FILTER_PARAM_KEY.getMessage(data.getNotSpecifiedQueryParam().getQueryParamKey()));
+        assertThat(result.getMessage()).isEqualTo(QueryParamMessageEnum.NO_FILTER_PARAM_KEY.getMessage(data.getNotSpecifiedQueryParam().getQueryParamKey()));
 
     }
 
     private static Stream<Arguments> notSpecifiedOneOfFilterParams() {
         return Stream.of(
-                Arguments.of("Test case for not specified query param: " + FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey(),
-                        new ParameterData(
-                                Map.of(FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey(), "2022-02-05"),
-                                FilterExpensesConditionsEnum.DATE_TO)
+                Arguments.of("Test case for not specified query param: " + QueryParamConditionsEnum.DATE_TO.getQueryParamKey(),
+                        new ExpenseParameterData(
+                                Map.of(QueryParamConditionsEnum.DATE_FROM.getQueryParamKey(), "2022-02-05"),
+                                QueryParamConditionsEnum.DATE_TO)
                 ),
 
-                Arguments.of("Test case for not specified query param: " + FilterExpensesConditionsEnum.DATE_FROM.getQueryParamKey(),
-                        new ParameterData(
-                                Map.of(FilterExpensesConditionsEnum.DATE_TO.getQueryParamKey(), "2022-02-05"),
-                                FilterExpensesConditionsEnum.DATE_FROM)
+                Arguments.of("Test case for not specified query param: " + QueryParamConditionsEnum.DATE_FROM.getQueryParamKey(),
+                        new ExpenseParameterData(
+                                Map.of(QueryParamConditionsEnum.DATE_TO.getQueryParamKey(), "2022-02-05"),
+                                QueryParamConditionsEnum.DATE_FROM)
                 ),
 
-                Arguments.of("Test case for not specified query param: " + FilterExpensesConditionsEnum.MONTH.getQueryParamKey(),
-                        new ParameterData(
-                                Map.of(FilterExpensesConditionsEnum.YEAR.getQueryParamKey(), "2022"),
-                                FilterExpensesConditionsEnum.MONTH)
+                Arguments.of("Test case for not specified query param: " + QueryParamConditionsEnum.MONTH.getQueryParamKey(),
+                        new ExpenseParameterData(
+                                Map.of(QueryParamConditionsEnum.YEAR.getQueryParamKey(), "2022"),
+                                QueryParamConditionsEnum.MONTH)
                 ),
 
-                Arguments.of("Test case for not specified query param: " + FilterExpensesConditionsEnum.YEAR.getQueryParamKey(),
-                        new ParameterData(
-                                Map.of(FilterExpensesConditionsEnum.MONTH.getQueryParamKey(), "april"),
-                                FilterExpensesConditionsEnum.YEAR)
+                Arguments.of("Test case for not specified query param: " + QueryParamConditionsEnum.YEAR.getQueryParamKey(),
+                        new ExpenseParameterData(
+                                Map.of(QueryParamConditionsEnum.MONTH.getQueryParamKey(), "april"),
+                                QueryParamConditionsEnum.YEAR)
                 )
         );
     }
 
     @Getter
     @AllArgsConstructor
-    private static class ParameterData {
+    private static class ExpenseParameterData {
         private Map<String, String> conditions;
-        private FilterExpensesConditionsEnum notSpecifiedQueryParam;
+        private QueryParamConditionsEnum notSpecifiedQueryParam;
     }
 }

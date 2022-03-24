@@ -22,7 +22,7 @@ class AuthenticationServiceIntegrationTests extends AbstractIntegrationTestSchem
     @Test
     void givenWrongUsername_whenAuthenticatingCredentials_thenThrowException() {
         //given
-        initializingDbWithDefaultPrincipal();
+        initializingAssetsDBWithPrincipal();
 
         AuthenticationUserDto wrongUsernameAuthentication = new AuthenticationUserDto();
         wrongUsernameAuthentication.setUsername("bad_credential");
@@ -38,7 +38,7 @@ class AuthenticationServiceIntegrationTests extends AbstractIntegrationTestSchem
     @Test
     void givenWrongPassword_whenAuthenticatingCredentials_thenThrowException() {
         //given
-        initializingDbWithDefaultPrincipal();
+        initializingAssetsDBWithPrincipal();
 
         AuthenticationUserDto wrongUsernameAuthentication = new AuthenticationUserDto();
         wrongUsernameAuthentication.setUsername("principal");

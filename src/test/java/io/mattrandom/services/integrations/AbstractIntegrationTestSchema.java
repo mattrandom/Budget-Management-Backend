@@ -2,13 +2,13 @@ package io.mattrandom.services.integrations;
 
 import io.mattrandom.enums.AssetCategory;
 import io.mattrandom.enums.ExpenseCategory;
-import io.mattrandom.repositories.AssetsRepository;
+import io.mattrandom.repositories.AssetRepository;
 import io.mattrandom.repositories.ExpenseRepository;
 import io.mattrandom.repositories.UserRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.repositories.entities.ExpenseEntity;
 import io.mattrandom.repositories.entities.UserEntity;
-import io.mattrandom.services.AssetsService;
+import io.mattrandom.services.AssetService;
 import io.mattrandom.services.ExpenseService;
 import io.mattrandom.services.security.CustomUserDetailsService;
 import io.mattrandom.services.security.JwtService;
@@ -28,9 +28,9 @@ import java.util.List;
 public abstract class AbstractIntegrationTestSchema {
 
     @Autowired
-    protected AssetsRepository assetsRepository;
+    protected AssetRepository assetRepository;
     @Autowired
-    protected AssetsService assetsService;
+    protected AssetService assetService;
     @Autowired
     protected UserRepository userRepository;
     @Autowired
@@ -46,6 +46,7 @@ public abstract class AbstractIntegrationTestSchema {
 
     protected static final String PRINCIPAL_LOGIN = "principal";
     protected static final String PRINCIPAL_PASSWORD = "pass";
+    protected static final String DATE_SUFFIX = "T00:00:00.00";
 
     protected UserEntity saveMockedUserInDB() {
         UserEntity userEntity = new UserEntity();
@@ -54,7 +55,14 @@ public abstract class AbstractIntegrationTestSchema {
         return userRepository.save(userEntity);
     }
 
-    protected void initializingDbWithDefaultPrincipal() {
+    protected UserEntity saveSecondMockedUserInDB() {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername("notLoggedIn");
+        userEntity.setPassword("pass");
+        return userRepository.save(userEntity);
+    }
+
+    protected void initializingAssetsDBWithPrincipal() {
         UserEntity principal = saveMockedUserInDB();
 
         AssetEntity entity1 = AssetEntity.builder()
@@ -71,18 +79,11 @@ public abstract class AbstractIntegrationTestSchema {
                 .userEntity(principal)
                 .build();
 
-        assetsRepository.saveAll(List.of(entity1, entity2));
+        assetRepository.saveAll(List.of(entity1, entity2));
 
     }
 
-    protected UserEntity saveSecondMockedUserInDB() {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername("notLoggedIn");
-        userEntity.setPassword("pass");
-        return userRepository.save(userEntity);
-    }
-
-    protected void initializingDbWithNotLoggedInUser() {
+    protected void initializingAssetsDBWithNotLoggedInUser() {
         UserEntity principal = saveSecondMockedUserInDB();
 
         AssetEntity entity1 = AssetEntity.builder()
@@ -99,7 +100,19 @@ public abstract class AbstractIntegrationTestSchema {
                 .userEntity(principal)
                 .build();
 
-        assetsRepository.saveAll(List.of(entity1, entity2));
+        assetRepository.saveAll(List.of(entity1, entity2));
+    }
+
+    protected Long initializingAssetsDB(UserEntity userEntity, String datePrefix) {
+        AssetEntity assetEntity = AssetEntity.builder()
+                .amount(BigDecimal.TEN)
+                .incomeDate(getLocalDateTimeParser(datePrefix))
+                .assetCategory(AssetCategory.SALARY)
+                .userEntity(userEntity)
+                .build();
+
+        AssetEntity savedEntity = assetRepository.save(assetEntity);
+        return savedEntity.getId();
     }
 
     protected Long initializingExpenseDB(UserEntity userEntity) {
@@ -115,15 +128,18 @@ public abstract class AbstractIntegrationTestSchema {
     }
 
     protected Long initializingExpenseDB(UserEntity userEntity, String datePrefix) {
-        String dateSuffix = "T00:00:00.00";
         ExpenseEntity expenseEntity = ExpenseEntity.builder()
                 .amount(BigDecimal.TEN)
-                .expenseDate(LocalDateTime.parse(datePrefix + dateSuffix))
+                .expenseDate(getLocalDateTimeParser(datePrefix))
                 .expenseCategory(ExpenseCategory.ENTERTAINMENT)
                 .userEntity(userEntity)
                 .build();
 
         ExpenseEntity savedEntity = expenseRepository.save(expenseEntity);
         return savedEntity.getId();
+    }
+
+    private LocalDateTime getLocalDateTimeParser(String datePrefix) {
+        return LocalDateTime.parse(datePrefix + DATE_SUFFIX);
     }
 }
