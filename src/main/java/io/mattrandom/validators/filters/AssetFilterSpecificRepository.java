@@ -19,4 +19,9 @@ public class AssetFilterSpecificRepository extends FilterSpecificRepositoryAbstr
     protected List<AssetEntity> getResultsFromProperRepositoryByDateBetween(UserEntity user, LocalDateTime dateFom, LocalDateTime dateTo) {
         return assetRepository.findByIncomeDateBetween(user, dateFom, dateTo);
     }
+
+    @Override
+    protected String getFilterName() {
+        return this.getClass().getSimpleName().replace("FilterSpecificRepository", "");
+    }
 }

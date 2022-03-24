@@ -4,6 +4,7 @@ import io.mattrandom.enums.AssetCategory;
 import io.mattrandom.enums.QueryParamMessageEnum;
 import io.mattrandom.enums.QueryParamConditionsEnum;
 import io.mattrandom.enums.MonthSpecificationEnum;
+import io.mattrandom.exceptions.AssetFilterQueryParamException;
 import io.mattrandom.exceptions.ExpenseFilterQueryParamException;
 import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.repositories.entities.UserEntity;
@@ -161,10 +162,10 @@ public class AssetServiceIntegrationTests extends AbstractIntegrationTestSchema 
         //given
         UserEntity user = saveMockedUserInDB();
         //when
-        ExpenseFilterQueryParamException result = assertThrows(ExpenseFilterQueryParamException.class, () -> assetService.getAssetsByFilteredConditions(data.getConditions()));
+        AssetFilterQueryParamException result = assertThrows(AssetFilterQueryParamException.class, () -> assetService.getAssetsByFilteredConditions(data.getConditions()));
 
         //then
-        assertThat(result.getMessage()).isEqualTo(QueryParamMessageEnum.NO_FILTER_PARAM_KEY.getMessage(data.getNotSpecifiedQueryParam().getQueryParamKey()));
+        assertThat(result.getMessage()).isEqualTo(QueryParamMessageEnum.NO_ASSET_FILTER_PARAM_KEY.getMessage(data.getNotSpecifiedQueryParam().getQueryParamKey()));
 
     }
 

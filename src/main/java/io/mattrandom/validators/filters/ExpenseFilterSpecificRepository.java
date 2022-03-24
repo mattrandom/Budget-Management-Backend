@@ -19,4 +19,9 @@ public class ExpenseFilterSpecificRepository extends FilterSpecificRepositoryAbs
     protected List<ExpenseEntity> getResultsFromProperRepositoryByDateBetween(UserEntity user, LocalDateTime dateFom, LocalDateTime dateTo) {
         return expenseRepository.findByExpenseDateBetween(user, dateFom, dateTo);
     }
+
+    @Override
+    protected String getFilterName() {
+        return this.getClass().getSimpleName().replace("FilterSpecificRepository", "");
+    }
 }

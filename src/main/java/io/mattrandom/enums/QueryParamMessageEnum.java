@@ -5,7 +5,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum QueryParamMessageEnum {
 
-    NO_FILTER_PARAM_KEY("Not specified query parameter for filtering expenses: ");
+    NO_EXPENSE_FILTER_PARAM_KEY("Not specified query parameter for filtering Expenses: "),
+    NO_ASSET_FILTER_PARAM_KEY("Not specified query parameter for filtering Assets: ");
 
     private final String message;
 

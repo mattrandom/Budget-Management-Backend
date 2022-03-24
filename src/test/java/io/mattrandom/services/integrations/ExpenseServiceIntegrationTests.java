@@ -168,7 +168,7 @@ public class ExpenseServiceIntegrationTests extends AbstractIntegrationTestSchem
         ExpenseFilterQueryParamException result = assertThrows(ExpenseFilterQueryParamException.class, () -> expenseService.getExpensesByFilteredConditions(data.getConditions()));
 
         //then
-        assertThat(result.getMessage()).isEqualTo(QueryParamMessageEnum.NO_FILTER_PARAM_KEY.getMessage(data.getNotSpecifiedQueryParam().getQueryParamKey()));
+        assertThat(result.getMessage()).isEqualTo(QueryParamMessageEnum.NO_EXPENSE_FILTER_PARAM_KEY.getMessage(data.getNotSpecifiedQueryParam().getQueryParamKey()));
 
     }
 

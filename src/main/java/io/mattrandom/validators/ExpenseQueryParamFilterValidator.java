@@ -11,7 +11,7 @@ public class ExpenseQueryParamFilterValidator extends QueryParamFilterValidator 
     public void throwProperException(String missingQueryParamKey, String errorCode) {
 
         throw new ExpenseFilterQueryParamException(
-                QueryParamMessageEnum.NO_FILTER_PARAM_KEY.getMessage(missingQueryParamKey),
+                QueryParamMessageEnum.NO_EXPENSE_FILTER_PARAM_KEY.getMessage(missingQueryParamKey),
                 errorCode
         );
     }
