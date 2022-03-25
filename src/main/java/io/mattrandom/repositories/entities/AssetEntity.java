@@ -24,6 +24,7 @@ public class AssetEntity {
     private Long id;
     private BigDecimal amount;
     private LocalDateTime incomeDate;
+    private String description;
 
     @Enumerated(EnumType.STRING)
     private AssetCategory assetCategory;

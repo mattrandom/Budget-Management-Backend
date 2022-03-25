@@ -20,6 +20,7 @@ public class AssetDto {
     private BigDecimal amount;
     private LocalDateTime incomeDate;
     private AssetCategory assetCategory;
+    private String description;
 
 //    private PlainAuthenticationUserDto user;
 }

@@ -32,6 +32,9 @@ public class AssetMapper {
         if (Objects.nonNull(userEntity)) {
             assetEntityBuilder.userEntity(userEntity);
         }
+        if (Objects.nonNull(assetDto.getDescription())) {
+            assetEntityBuilder.description(assetDto.getDescription());
+        }
 
         return assetEntityBuilder.build();
     }
@@ -54,6 +57,9 @@ public class AssetMapper {
         }
         if (Objects.nonNull(assetEntity.getAssetCategory())) {
             assetDtoBuilder.assetCategory(assetEntity.getAssetCategory());
+        }
+        if (Objects.nonNull(assetEntity.getDescription())) {
+            assetDtoBuilder.description(assetEntity.getDescription());
         }
 //        if (Objects.nonNull(assetEntity.getUserEntity())) {
 //            assetDtoBuilder.user(PlainAuthenticationUserDto.builder()
