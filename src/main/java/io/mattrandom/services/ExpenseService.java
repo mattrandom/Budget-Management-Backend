@@ -1,11 +1,12 @@
 package io.mattrandom.services;
 
+import io.mattrandom.enums.FilterSpecificationEnum;
 import io.mattrandom.mappers.ExpenseMapper;
 import io.mattrandom.repositories.ExpenseRepository;
 import io.mattrandom.repositories.entities.ExpenseEntity;
 import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.ExpenseDto;
-import io.mattrandom.validators.filters.factory.abstraction.AbstractFilterSpecificRepository;
+import io.mattrandom.validators.filters.strategy.RepositoryFilterStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final ExpenseMapper expenseMapper;
     private final UserLoginService userLoginService;
-    private final AbstractFilterSpecificRepository<ExpenseEntity> filterSpecificRepository;
+    private final RepositoryFilterStrategy<ExpenseEntity> filterSpecificRepository;
 
     public List<ExpenseDto> getAllExpenses() {
         UserEntity user = userLoginService.getLoggedUserEntity();
@@ -53,7 +54,8 @@ public class ExpenseService {
 
     public List<ExpenseDto> getExpensesByFilteredConditions(Map<String, String> conditions) {
         UserEntity loggedUserEntity = userLoginService.getLoggedUserEntity();
-        List<ExpenseEntity> allFilteredExpenses = filterSpecificRepository.getAllFilteredData(loggedUserEntity, conditions);
+        FilterSpecificationEnum filterSpecification = FilterSpecificationEnum.EXPENSE_APPLICABLE;
+        List<ExpenseEntity> allFilteredExpenses = filterSpecificRepository.chooseFilterAccordingToSpecification(loggedUserEntity, conditions, filterSpecification);
 
         return expenseMapper.toDtos(allFilteredExpenses);
     }

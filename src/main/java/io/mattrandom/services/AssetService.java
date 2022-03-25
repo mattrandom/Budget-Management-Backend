@@ -1,13 +1,14 @@
 package io.mattrandom.services;
 
 import io.mattrandom.enums.AssetCategory;
+import io.mattrandom.enums.FilterSpecificationEnum;
 import io.mattrandom.mappers.AssetMapper;
 import io.mattrandom.repositories.AssetRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.AssetDto;
 import io.mattrandom.validators.AssetValidator;
-import io.mattrandom.validators.filters.factory.abstraction.AbstractFilterSpecificRepository;
+import io.mattrandom.validators.filters.strategy.RepositoryFilterStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class AssetService {
     private final AssetMapper assetMapper;
     private final AssetValidator assetValidator;
     private final UserLoginService userLoginService;
-    private final AbstractFilterSpecificRepository<AssetEntity> filterSpecificRepository;
+    private final RepositoryFilterStrategy<AssetEntity> filterSpecificRepository;
 
     public List<AssetDto> getAllAssetsByPrincipal() {
         log.debug("Getting all Assets of the currently logged in principal user");
@@ -83,7 +84,8 @@ public class AssetService {
 
     public List<AssetDto> getAssetsByFilteredConditions(Map<String, String> conditions) {
         UserEntity loggedUserEntity = userLoginService.getLoggedUserEntity();
-        List<AssetEntity> allFilteredData = filterSpecificRepository.getAllFilteredData(loggedUserEntity, conditions);
+        FilterSpecificationEnum filterSpecification = FilterSpecificationEnum.ASSET_APPLICABLE;
+        List<AssetEntity> allFilteredData = filterSpecificRepository.chooseFilterAccordingToSpecification(loggedUserEntity, conditions, filterSpecification);
 
         return allFilteredData.stream()
                 .map(assetMapper::toDto)

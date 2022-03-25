@@ -7,8 +7,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum FilterSpecificationEnum {
 
-    ASSET_APPLICABLE("assetQueryParamFilterValidatorBean"),
-    EXPENSE_APPLICABLE("expenseQueryParamFilterValidatorBean");
+    ASSET_APPLICABLE("assetQueryParamFilterValidatorBean", "assetFilterSpecificRepositoryBean"),
+    EXPENSE_APPLICABLE("expenseQueryParamFilterValidatorBean", "expenseFilterSpecificRepositoryBean");
 
     private final String queryParamFilterValidatorDedicatedFor;
+    private final String specificRepositoryFilterDedicatedFor;
 }

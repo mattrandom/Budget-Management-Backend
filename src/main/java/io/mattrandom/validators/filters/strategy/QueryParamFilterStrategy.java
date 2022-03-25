@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class FilterStrategy {
+public class QueryParamFilterStrategy {
 
     private final Map<String, AbstractQueryParamFilterValidator> filterStrategyMap;
 

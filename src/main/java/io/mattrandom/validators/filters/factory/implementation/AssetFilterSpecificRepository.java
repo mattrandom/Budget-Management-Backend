@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Component
+@Component("assetFilterSpecificRepositoryBean")
 @RequiredArgsConstructor
 public class AssetFilterSpecificRepository extends AbstractFilterSpecificRepository<AssetEntity> {
 
@@ -19,10 +19,5 @@ public class AssetFilterSpecificRepository extends AbstractFilterSpecificReposit
     @Override
     protected List<AssetEntity> getResultsFromProperRepositoryByDateBetween(UserEntity user, LocalDateTime dateFom, LocalDateTime dateTo) {
         return assetRepository.findByIncomeDateBetween(user, dateFom, dateTo);
-    }
-
-    @Override
-    protected String getFilterName() {
-        return this.getClass().getSimpleName().replace("FilterSpecificRepository", "");
     }
 }

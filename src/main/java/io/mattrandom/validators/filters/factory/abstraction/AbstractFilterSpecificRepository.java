@@ -4,7 +4,7 @@ import io.mattrandom.enums.FilterSpecificationEnum;
 import io.mattrandom.enums.MonthSpecificationEnum;
 import io.mattrandom.enums.QueryParamConditionsEnum;
 import io.mattrandom.repositories.entities.UserEntity;
-import io.mattrandom.validators.filters.strategy.FilterStrategy;
+import io.mattrandom.validators.filters.strategy.QueryParamFilterStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,16 +17,13 @@ import java.util.Map;
 public abstract class AbstractFilterSpecificRepository<T> {
 
     @Autowired
-    private FilterStrategy filterStrategy;
+    private QueryParamFilterStrategy queryParamFilterStrategy;
 
     private static final String DATE_SUFFIX = "T00:00:00.00";
 
-    public List<T> getAllFilteredData(UserEntity user, Map<String, String> conditions) {
+    public List<T> getAllFilteredData(UserEntity user, Map<String, String> conditions, FilterSpecificationEnum filterSpecification) {
 
-        switch (getFilterName()) {
-            case "Asset" -> filterStrategy.chooseFilterAccordingToSpecification(conditions, FilterSpecificationEnum.ASSET_APPLICABLE);
-            case "Expense" -> filterStrategy.chooseFilterAccordingToSpecification(conditions, FilterSpecificationEnum.EXPENSE_APPLICABLE);
-        }
+        queryParamFilterStrategy.chooseFilterAccordingToSpecification(conditions, filterSpecification);
 
         if (isFromToQueryParamConditionsFound(conditions)) {
             String dateFrom = conditions.get(QueryParamConditionsEnum.DATE_FROM.getQueryParamKey());
@@ -64,6 +61,4 @@ public abstract class AbstractFilterSpecificRepository<T> {
     }
 
     protected abstract List<T> getResultsFromProperRepositoryByDateBetween(UserEntity user, LocalDateTime dateFom, LocalDateTime dateTo);
-
-    protected abstract String getFilterName();
 }

@@ -8,6 +8,7 @@ import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.services.dtos.AssetDto;
 import io.mattrandom.validators.AssetValidator;
 import io.mattrandom.validators.filters.factory.abstraction.AbstractFilterSpecificRepository;
+import io.mattrandom.validators.filters.strategy.RepositoryFilterStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +35,7 @@ class AssetServiceTest {
     @Mock
     private UserLoginService userLoginService;
     @Mock
-    private AbstractFilterSpecificRepository<AssetEntity> filterSpecificRepository;
+    private RepositoryFilterStrategy<AssetEntity> filterSpecificRepository;
 
     private final AssetMapper assetMapper = new AssetMapper();
     private final AssetValidator assetValidator = new AssetValidator();
