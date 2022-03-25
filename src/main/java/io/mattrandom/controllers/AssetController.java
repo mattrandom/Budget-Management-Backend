@@ -4,6 +4,8 @@ import io.mattrandom.enums.AssetCategory;
 import io.mattrandom.services.AssetService;
 import io.mattrandom.services.dtos.AssetDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,32 +19,33 @@ public class AssetController {
     private final AssetService assetService;
 
     @GetMapping
-    public List<AssetDto> getAllAssets() {
-        return assetService.getAllAssetsByPrincipal();
+    public ResponseEntity<List<AssetDto>> getAllAssets() {
+        return ResponseEntity.status(HttpStatus.OK).body(assetService.getAllAssetsByPrincipal());
     }
 
     @GetMapping("/find")
-    public List<AssetDto> getAllAssetsByCategory(@RequestParam("category") String assetCategory) {
-        return assetService.getAllAssetsByCategory(AssetCategory.valueOf(assetCategory.toUpperCase()));
+    public ResponseEntity<List<AssetDto>> getAllAssetsByCategory(@RequestParam("category") String assetCategory) {
+        return ResponseEntity.status(HttpStatus.OK).body(assetService.getAllAssetsByCategory(AssetCategory.valueOf(assetCategory.toUpperCase())));
     }
 
     @GetMapping("/filter")
-    public List<AssetDto> getAssetsByFilteredConditions(@RequestParam Map<String, String> conditions) {
-        return assetService.getAssetsByFilteredConditions(conditions);
+    public ResponseEntity<List<AssetDto>> getAssetsByFilteredConditions(@RequestParam Map<String, String> conditions) {
+        return ResponseEntity.status(HttpStatus.OK).body(assetService.getAssetsByFilteredConditions(conditions));
     }
 
     @PostMapping
-    public void addAssets(@RequestBody AssetDto assetDto) {
-        assetService.addAsset(assetDto);
+    public ResponseEntity<AssetDto> addAssets(@RequestBody AssetDto assetDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(assetService.addAsset(assetDto));
     }
 
     @DeleteMapping
-    public void deleteAsset(@RequestBody AssetDto assetDto) {
+    public ResponseEntity<Void> deleteAsset(@RequestBody AssetDto assetDto) {
         assetService.deleteAsset(assetDto);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping
-    public void updateAsset(@RequestBody AssetDto assetDto) {
-        assetService.updateAsset(assetDto);
+    public ResponseEntity<AssetDto> updateAsset(@RequestBody AssetDto assetDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(assetService.updateAsset(assetDto));
     }
 }

@@ -39,7 +39,7 @@ public class AssetService {
                 .toList();
     }
 
-    public void addAsset(AssetDto assetDto) {
+    public AssetDto addAsset(AssetDto assetDto) {
         log.info("Adding single Asset");
         log.debug("AssetDto: " + assetDto);
         assetValidator.validate(assetDto);
@@ -48,6 +48,7 @@ public class AssetService {
 
         assetRepository.save(assetEntity);
         log.info("Asset has just been saved!");
+        return assetMapper.toDto(assetEntity);
     }
 
     public void deleteAsset(AssetDto assetDto) {
@@ -60,7 +61,7 @@ public class AssetService {
         log.info("Asset has just been deleted!");
     }
 
-    public void updateAsset(AssetDto assetDto) {
+    public AssetDto updateAsset(AssetDto assetDto) {
         log.info("Updating single Asset");
         log.debug("AssetDto: " + assetDto);
         Optional<AssetEntity> assetEntity = assetRepository.findById(assetDto.getId());
@@ -69,6 +70,7 @@ public class AssetService {
             assetRepository.saveAndFlush(assetEntityOpt);
         });
         log.info("Asset has just been updated!");
+        return assetMapper.toDto(assetEntity.get());
     }
 
     public List<AssetDto> getAllAssetsByCategory(AssetCategory assetCategory) {
