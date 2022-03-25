@@ -1,10 +1,10 @@
-package io.mattrandom.validators.filters;
+package io.mattrandom.validators.filters.factory.abstraction;
 
+import io.mattrandom.enums.FilterSpecificationEnum;
 import io.mattrandom.enums.MonthSpecificationEnum;
 import io.mattrandom.enums.QueryParamConditionsEnum;
 import io.mattrandom.repositories.entities.UserEntity;
-import io.mattrandom.validators.AssetQueryParamFilterValidator;
-import io.mattrandom.validators.ExpenseQueryParamFilterValidator;
+import io.mattrandom.validators.filters.strategy.FilterStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,20 +14,18 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public abstract class FilterSpecificRepositoryAbstract<T> {
+public abstract class AbstractFilterSpecificRepository<T> {
 
     @Autowired
-    private AssetQueryParamFilterValidator assetQueryParamFilterValidator;
-    @Autowired
-    private ExpenseQueryParamFilterValidator expenseQueryParamFilterValidator;
+    private FilterStrategy filterStrategy;
 
     private static final String DATE_SUFFIX = "T00:00:00.00";
 
     public List<T> getAllFilteredData(UserEntity user, Map<String, String> conditions) {
 
         switch (getFilterName()) {
-            case "Asset" -> assetQueryParamFilterValidator.chooseFilter(conditions);
-            case "Expense" -> expenseQueryParamFilterValidator.chooseFilter(conditions);
+            case "Asset" -> filterStrategy.chooseFilterAccordingToSpecification(conditions, FilterSpecificationEnum.ASSET_APPLICABLE);
+            case "Expense" -> filterStrategy.chooseFilterAccordingToSpecification(conditions, FilterSpecificationEnum.EXPENSE_APPLICABLE);
         }
 
         if (isFromToQueryParamConditionsFound(conditions)) {

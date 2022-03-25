@@ -7,7 +7,7 @@ import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.AssetDto;
 import io.mattrandom.validators.AssetValidator;
-import io.mattrandom.validators.filters.FilterSpecificRepositoryAbstract;
+import io.mattrandom.validators.filters.factory.abstraction.AbstractFilterSpecificRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class AssetService {
     private final AssetMapper assetMapper;
     private final AssetValidator assetValidator;
     private final UserLoginService userLoginService;
-    private final FilterSpecificRepositoryAbstract<AssetEntity> filterSpecificRepository;
+    private final AbstractFilterSpecificRepository<AssetEntity> filterSpecificRepository;
 
     public List<AssetDto> getAllAssetsByPrincipal() {
         log.debug("Getting all Assets of the currently logged in principal user");

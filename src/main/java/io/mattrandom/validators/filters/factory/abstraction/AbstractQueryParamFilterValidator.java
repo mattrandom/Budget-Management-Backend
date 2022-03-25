@@ -1,10 +1,10 @@
-package io.mattrandom.validators;
+package io.mattrandom.validators.filters.factory.abstraction;
 
 import io.mattrandom.enums.QueryParamConditionsEnum;
 
 import java.util.Map;
 
-public abstract class QueryParamFilterValidator {
+public abstract class AbstractQueryParamFilterValidator {
 
     public void chooseFilter(Map<String, String> conditions) {
         verifyLackOfToKeyQueryParamURL(conditions, "07b1969f-519f-494e-af7f-69f73eb92503");

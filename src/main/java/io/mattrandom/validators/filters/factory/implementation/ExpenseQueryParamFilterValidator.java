@@ -1,11 +1,12 @@
-package io.mattrandom.validators;
+package io.mattrandom.validators.filters.factory.implementation;
 
 import io.mattrandom.enums.QueryParamMessageEnum;
 import io.mattrandom.exceptions.ExpenseFilterQueryParamException;
+import io.mattrandom.validators.filters.factory.abstraction.AbstractQueryParamFilterValidator;
 import org.springframework.stereotype.Component;
 
-@Component
-public class ExpenseQueryParamFilterValidator extends QueryParamFilterValidator {
+@Component("expenseQueryParamFilterValidatorBean")
+class ExpenseQueryParamFilterValidator extends AbstractQueryParamFilterValidator {
 
     @Override
     public void throwProperException(String missingQueryParamKey, String errorCode) {

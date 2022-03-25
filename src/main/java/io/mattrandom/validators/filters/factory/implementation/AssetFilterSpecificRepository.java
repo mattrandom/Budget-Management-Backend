@@ -1,8 +1,9 @@
-package io.mattrandom.validators.filters;
+package io.mattrandom.validators.filters.factory.implementation;
 
 import io.mattrandom.repositories.AssetRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.repositories.entities.UserEntity;
+import io.mattrandom.validators.filters.factory.abstraction.AbstractFilterSpecificRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class AssetFilterSpecificRepository extends FilterSpecificRepositoryAbstract<AssetEntity> {
+public class AssetFilterSpecificRepository extends AbstractFilterSpecificRepository<AssetEntity> {
 
     private final AssetRepository assetRepository;
 

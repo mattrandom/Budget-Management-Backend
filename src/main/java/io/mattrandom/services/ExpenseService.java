@@ -5,7 +5,7 @@ import io.mattrandom.repositories.ExpenseRepository;
 import io.mattrandom.repositories.entities.ExpenseEntity;
 import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.ExpenseDto;
-import io.mattrandom.validators.filters.FilterSpecificRepositoryAbstract;
+import io.mattrandom.validators.filters.factory.abstraction.AbstractFilterSpecificRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +22,7 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final ExpenseMapper expenseMapper;
     private final UserLoginService userLoginService;
-    private final FilterSpecificRepositoryAbstract<ExpenseEntity> filterSpecificRepository;
+    private final AbstractFilterSpecificRepository<ExpenseEntity> filterSpecificRepository;
 
     public List<ExpenseDto> getAllExpenses() {
         UserEntity user = userLoginService.getLoggedUserEntity();
