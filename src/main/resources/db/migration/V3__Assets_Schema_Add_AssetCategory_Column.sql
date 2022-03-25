@@ -1,1 +1,1 @@
-alter table assets add asset_category VARCHAR(15) NULL;
+alter table assets add asset_category VARCHAR(255) NULL;

@@ -19,6 +19,6 @@ public interface AssetRepository extends JpaRepository<AssetEntity, Long> {
 
     void deleteByUserEntity(UserEntity userEntity);
 
-    @Query("SELECT a from AssetEntity a WHERE a.userEntity = :user AND a.incomeDate BETWEEN :incomeDateFrom AND :incomeDateTo")
-    List<AssetEntity> findByIncomeDateBetween(UserEntity user, LocalDateTime incomeDateFrom, LocalDateTime incomeDateTo);
+    @Query("SELECT a FROM AssetEntity a WHERE a.userEntity = :user AND a.incomeDate BETWEEN :incomeDateFrom AND :incomeDateTo AND a.assetCategory IN :assetCategories")
+    List<AssetEntity> findByIncomeDateBetween(UserEntity user, LocalDateTime incomeDateFrom, LocalDateTime incomeDateTo, List<AssetCategory> assetCategories);
 }

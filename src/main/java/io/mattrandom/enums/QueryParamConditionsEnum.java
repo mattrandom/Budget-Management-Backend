@@ -9,7 +9,8 @@ public enum QueryParamConditionsEnum {
     DATE_FROM("from"),
     DATE_TO("to"),
     YEAR("year"),
-    MONTH("month");
+    MONTH("month"),
+    CATEGORY("category");
 
     private final String queryParamKey;
 }

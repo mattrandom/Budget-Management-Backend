@@ -7,7 +7,6 @@ import io.mattrandom.repositories.AssetRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.services.dtos.AssetDto;
 import io.mattrandom.validators.AssetValidator;
-import io.mattrandom.validators.filters.factory.abstraction.AbstractFilterSpecificRepository;
 import io.mattrandom.validators.filters.strategy.RepositoryFilterStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

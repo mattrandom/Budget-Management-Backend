@@ -25,7 +25,6 @@ public class AssetEntity {
     private BigDecimal amount;
     private LocalDateTime incomeDate;
 
-    @Column(length = 15)
     @Enumerated(EnumType.STRING)
     private AssetCategory assetCategory;
 

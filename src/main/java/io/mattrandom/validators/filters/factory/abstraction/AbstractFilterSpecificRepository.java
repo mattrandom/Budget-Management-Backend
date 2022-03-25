@@ -28,12 +28,14 @@ public abstract class AbstractFilterSpecificRepository<T> {
         if (isFromToQueryParamConditionsFound(conditions)) {
             String dateFrom = conditions.get(QueryParamConditionsEnum.DATE_FROM.getQueryParamKey());
             String dateTo = conditions.get(QueryParamConditionsEnum.DATE_TO.getQueryParamKey());
-            return getResultsFromProperRepositoryByDateBetween(user, getLocalDateTimeParser(dateFrom), getLocalDateTimeParser(dateTo));
+            String category = conditions.get(QueryParamConditionsEnum.CATEGORY.getQueryParamKey());
+            return getResultsFromProperRepositoryByDateBetween(user, getLocalDateTimeParser(dateFrom), getLocalDateTimeParser(dateTo), category);
 
         } else if (isMonthYearQueryParamConditionsFound(conditions)) {
             MonthSpecificationEnum month = MonthSpecificationEnum.valueOf(conditions.get(QueryParamConditionsEnum.MONTH.getQueryParamKey()).toUpperCase());
             String year = conditions.get(QueryParamConditionsEnum.YEAR.getQueryParamKey());
-            return getMonthlyExpensesByGivenYear(user, month, year);
+            String category = conditions.get(QueryParamConditionsEnum.CATEGORY.getQueryParamKey());
+            return getMonthlyExpensesByGivenYear(user, month, year, category);
         }
 
         return Collections.emptyList();
@@ -49,16 +51,16 @@ public abstract class AbstractFilterSpecificRepository<T> {
                 && conditions.containsKey(QueryParamConditionsEnum.MONTH.getQueryParamKey());
     }
 
-    private List<T> getMonthlyExpensesByGivenYear(UserEntity user, MonthSpecificationEnum month, String year) {
+    private List<T> getMonthlyExpensesByGivenYear(UserEntity user, MonthSpecificationEnum month, String year, String category) {
         String dateFrom = month.getFirstDayOfGivenMonthAndYear(year);
         String dateTo = month.getLastDayOfGivenMonthAndYear(year);
 
-        return getResultsFromProperRepositoryByDateBetween(user, getLocalDateTimeParser(dateFrom), getLocalDateTimeParser(dateTo));
+        return getResultsFromProperRepositoryByDateBetween(user, getLocalDateTimeParser(dateFrom), getLocalDateTimeParser(dateTo), category);
     }
 
     private LocalDateTime getLocalDateTimeParser(String datePrefix) {
         return LocalDateTime.parse(datePrefix + DATE_SUFFIX);
     }
 
-    protected abstract List<T> getResultsFromProperRepositoryByDateBetween(UserEntity user, LocalDateTime dateFom, LocalDateTime dateTo);
+    protected abstract List<T> getResultsFromProperRepositoryByDateBetween(UserEntity user, LocalDateTime dateFom, LocalDateTime dateTo, String category);
 }

@@ -5,7 +5,6 @@ import io.mattrandom.enums.QueryParamMessageEnum;
 import io.mattrandom.enums.QueryParamConditionsEnum;
 import io.mattrandom.enums.MonthSpecificationEnum;
 import io.mattrandom.exceptions.AssetFilterQueryParamException;
-import io.mattrandom.exceptions.ExpenseFilterQueryParamException;
 import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.AssetDto;
@@ -135,7 +134,7 @@ public class AssetServiceIntegrationTests extends AbstractIntegrationTestSchema 
     }
 
     @Test
-    void givenExpenseObjects_whenGetMonthlyExpensesByGivenYear_thenShouldReturnObjects() {
+    void givenAssetsObjects_whenGetMonthlyAssetsByGivenYear_thenShouldReturnObjects() {
         //given
         UserEntity user = saveMockedUserInDB();
         initializingAssetsDB(user, "2022-01-05");
@@ -195,6 +194,30 @@ public class AssetServiceIntegrationTests extends AbstractIntegrationTestSchema 
                                 QueryParamConditionsEnum.YEAR)
                 )
         );
+    }
+
+    @Test
+    void givenAssetsObjects_whenGetMonthlyAssetsByGivenYearCategory_thenShouldReturnObjects() {
+        //given
+        UserEntity user = saveMockedUserInDB();
+        initializingAssetsDB(user, "2022-01-05");
+        initializingAssetsDB(user, "2022-04-01");
+        initializingAssetsDB(user, "2022-04-05");
+        initializingAssetsDB(user, "2022-04-15");
+        initializingAssetsDB(user, "2022-04-30");
+        initializingAssetsDB(user, "2022-06-05");
+
+        //when
+        Map<String, String> yearMonthCategoryConditions = Map.of(
+                QueryParamConditionsEnum.MONTH.getQueryParamKey(), MonthSpecificationEnum.APRIL.name(),
+                QueryParamConditionsEnum.YEAR.getQueryParamKey(), "2022",
+                QueryParamConditionsEnum.CATEGORY.getQueryParamKey(), "salary"
+        );
+        List<AssetDto> allExpenses = assetService.getAssetsByFilteredConditions(yearMonthCategoryConditions);
+
+        //then
+        assertThat(allExpenses).hasSize(4);
+        assertThat(allExpenses.get(2).getAssetCategory()).isEqualTo(AssetCategory.SALARY);
     }
 
     @Getter
