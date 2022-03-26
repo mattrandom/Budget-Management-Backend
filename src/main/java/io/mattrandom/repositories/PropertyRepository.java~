@@ -1,0 +1,4 @@
+package io.mattrandom.repositories.entities;
+
+public interface PropertyRepository extends org.springframework.data.jpa.repository.JpaRepository<io.mattrandom.repositories.entities.PropertyEntity, java.lang.Long> {
+}
