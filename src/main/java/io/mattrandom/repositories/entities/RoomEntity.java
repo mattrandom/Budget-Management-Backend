@@ -1,12 +1,16 @@
 package io.mattrandom.repositories.entities;
 
+import io.mattrandom.enums.RoomType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 
 @Data
 @SuperBuilder
@@ -14,13 +18,11 @@ import javax.persistence.Table;
 @AllArgsConstructor
 
 @Entity
-@Table(name = "properties")
-public class PropertyEntity extends AbstractEntity {
+@Table(name = "rooms")
+public class RoomEntity extends AbstractEntity {
 
-    private String postalCode;
-    private String city;
-    private String street;
-    private Integer rooms;
-    private Boolean single;
-    private String house;
+    private BigDecimal cost;
+
+    @Enumerated(EnumType.STRING)
+    private RoomType roomType;
 }
