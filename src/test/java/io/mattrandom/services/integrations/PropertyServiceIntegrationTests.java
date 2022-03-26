@@ -67,6 +67,19 @@ public class PropertyServiceIntegrationTests extends AbstractIntegrationTestSche
         //then
         assertThat(propertyRepository.findAll().get(0).getCity()).isEqualTo(propertyDto.getCity());
         assertThat(propertyRepository.findAll().get(0).getStreet()).isEqualTo(propertyDto.getStreet());
+    }
 
+    @Test
+    void givenProperty_whenDeleteProperty_thenDeleteAndReturnNoContent() {
+        //given
+        UserEntity user = saveMockedUserInDB();
+        initializingPropertyDB(user);
+        PropertyDto propertyDto = propertyService.getAllProperties().stream().findFirst().get();
+
+        //when
+        propertyService.deleteProperty(propertyDto);
+
+        //then
+        assertThat(propertyRepository.findAll()).hasSize(0);
     }
 }

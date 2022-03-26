@@ -39,4 +39,9 @@ public class PropertyService {
         propertyEntityOpt.ifPresent(propertyEntity -> propertyMapper.toEntityUpdatedByDto(propertyEntityOpt.get(), propertyDto));
         return propertyMapper.toDto(propertyEntityOpt.get());
     }
+
+    public void deleteProperty(PropertyDto propertyDto) {
+        Optional<PropertyEntity> propertyEntityOpt = propertyRepository.findById(propertyDto.getId());
+        propertyEntityOpt.ifPresent(propertyRepository::delete);
+    }
 }

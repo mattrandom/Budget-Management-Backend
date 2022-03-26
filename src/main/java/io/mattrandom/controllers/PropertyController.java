@@ -30,4 +30,10 @@ public class PropertyController {
     public ResponseEntity<PropertyDto> updateProperty(@RequestBody PropertyDto propertyDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(propertyService.updateProperty(propertyDto));
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteExpense(@RequestBody PropertyDto propertyDto) {
+        propertyService.deleteProperty(propertyDto);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
