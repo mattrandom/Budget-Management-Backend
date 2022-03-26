@@ -8,6 +8,8 @@ import io.mattrandom.services.dtos.PropertyDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PropertyService {
@@ -21,5 +23,11 @@ public class PropertyService {
         PropertyEntity propertyEntity = propertyMapper.toEntity(propertyDto, loggedUserEntity);
         propertyRepository.save(propertyEntity);
         return propertyMapper.toDto(propertyEntity);
+    }
+
+    public List<PropertyDto> getAllProperties() {
+        UserEntity loggedUserEntity = userLoginService.getLoggedUserEntity();
+        List<PropertyEntity> entities = propertyRepository.findByUserEntity(loggedUserEntity);
+        return propertyMapper.toDtos(entities);
     }
 }

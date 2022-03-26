@@ -8,6 +8,7 @@ import io.mattrandom.repositories.PropertyRepository;
 import io.mattrandom.repositories.UserRepository;
 import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.repositories.entities.ExpenseEntity;
+import io.mattrandom.repositories.entities.PropertyEntity;
 import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.AssetService;
 import io.mattrandom.services.ExpenseService;
@@ -143,6 +144,20 @@ public abstract class AbstractIntegrationTestSchema {
 
         ExpenseEntity savedEntity = expenseRepository.save(expenseEntity);
         return savedEntity.getId();
+    }
+
+    protected void initializingPropertyDB(UserEntity userEntity) {
+        PropertyEntity propertyEntity = PropertyEntity.builder()
+                .postalCode("66-666")
+                .city("BigCity")
+                .street("Long Street")
+                .rooms(2)
+                .single(false)
+                .house("Flat")
+                .userEntity(userEntity)
+                .build();
+
+        propertyRepository.save(propertyEntity);
     }
 
     private LocalDateTime getLocalDateTimeParser(String datePrefix) {
