@@ -1,13 +1,10 @@
 package io.mattrandom.services.dtos;
 
-import lombok.*;
-
-import java.io.Serializable;
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class PropertyDto {
 
     private Long id;

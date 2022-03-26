@@ -2,10 +2,7 @@ package io.mattrandom.services.integrations;
 
 import io.mattrandom.enums.AssetCategory;
 import io.mattrandom.enums.ExpenseCategory;
-import io.mattrandom.repositories.AssetRepository;
-import io.mattrandom.repositories.ExpenseRepository;
-import io.mattrandom.repositories.PropertyRepository;
-import io.mattrandom.repositories.UserRepository;
+import io.mattrandom.repositories.*;
 import io.mattrandom.repositories.entities.AssetEntity;
 import io.mattrandom.repositories.entities.ExpenseEntity;
 import io.mattrandom.repositories.entities.PropertyEntity;
@@ -13,6 +10,7 @@ import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.AssetService;
 import io.mattrandom.services.ExpenseService;
 import io.mattrandom.services.PropertyService;
+import io.mattrandom.services.RoomService;
 import io.mattrandom.services.security.CustomUserDetailsService;
 import io.mattrandom.services.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +48,10 @@ public abstract class AbstractIntegrationTestSchema {
     protected PropertyService propertyService;
     @Autowired
     protected PropertyRepository propertyRepository;
+    @Autowired
+    protected RoomService roomService;
+    @Autowired
+    protected RoomRepository roomRepository;
 
     protected static final String PRINCIPAL_LOGIN = "principal";
     protected static final String PRINCIPAL_PASSWORD = "pass";
