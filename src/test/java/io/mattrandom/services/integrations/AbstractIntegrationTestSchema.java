@@ -146,7 +146,7 @@ public abstract class AbstractIntegrationTestSchema {
         return savedEntity.getId();
     }
 
-    protected void initializingPropertyDB(UserEntity userEntity) {
+    protected PropertyEntity initializingPropertyDB(UserEntity userEntity) {
         PropertyEntity propertyEntity = PropertyEntity.builder()
                 .postalCode("66-666")
                 .city("BigCity")
@@ -157,7 +157,7 @@ public abstract class AbstractIntegrationTestSchema {
                 .userEntity(userEntity)
                 .build();
 
-        propertyRepository.save(propertyEntity);
+        return propertyRepository.save(propertyEntity);
     }
 
     private LocalDateTime getLocalDateTimeParser(String datePrefix) {

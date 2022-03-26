@@ -25,4 +25,9 @@ public class PropertyController {
     public ResponseEntity<List<PropertyDto>> getAllProperties() {
         return ResponseEntity.status(HttpStatus.OK).body(propertyService.getAllProperties());
     }
+
+    @PutMapping
+    public ResponseEntity<PropertyDto> updateProperty(@RequestBody PropertyDto propertyDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(propertyService.updateProperty(propertyDto));
+    }
 }
