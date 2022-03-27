@@ -2,11 +2,9 @@ package io.mattrandom.services.integrations;
 
 import io.mattrandom.enums.AssetCategory;
 import io.mattrandom.enums.ExpenseCategory;
+import io.mattrandom.enums.RoomType;
 import io.mattrandom.repositories.*;
-import io.mattrandom.repositories.entities.AssetEntity;
-import io.mattrandom.repositories.entities.ExpenseEntity;
-import io.mattrandom.repositories.entities.PropertyEntity;
-import io.mattrandom.repositories.entities.UserEntity;
+import io.mattrandom.repositories.entities.*;
 import io.mattrandom.services.AssetService;
 import io.mattrandom.services.ExpenseService;
 import io.mattrandom.services.PropertyService;
@@ -23,9 +21,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static io.mattrandom.services.integrations.AbstractIntegrationTestSchema.PRINCIPAL_PASSWORD;
+
 @Transactional
 @SpringBootTest
-@WithMockUser(username = "principal", password = "pass")
+@WithMockUser(username = AbstractIntegrationTestSchema.PRINCIPAL_LOGIN, password = PRINCIPAL_PASSWORD)
 public abstract class AbstractIntegrationTestSchema {
 
     @Autowired
@@ -59,8 +59,8 @@ public abstract class AbstractIntegrationTestSchema {
 
     protected UserEntity saveMockedUserInDB() {
         UserEntity userEntity = new UserEntity();
-        userEntity.setUsername("principal");
-        userEntity.setPassword("pass");
+        userEntity.setUsername(PRINCIPAL_LOGIN);
+        userEntity.setPassword(PRINCIPAL_PASSWORD);
         return userRepository.save(userEntity);
     }
 
@@ -160,6 +160,16 @@ public abstract class AbstractIntegrationTestSchema {
                 .build();
 
         return propertyRepository.save(propertyEntity);
+    }
+
+    protected RoomEntity initializingRoomDB(UserEntity userEntity, RoomType roomType, BigDecimal roomCost) {
+        RoomEntity roomEntity = RoomEntity.builder()
+                .cost(roomCost)
+                .roomType(roomType)
+                .userEntity(userEntity)
+                .build();
+
+        return roomRepository.save(roomEntity);
     }
 
     private LocalDateTime getLocalDateTimeParser(String datePrefix) {

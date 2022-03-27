@@ -6,6 +6,7 @@ import io.mattrandom.services.dtos.RoomDto;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,4 +21,8 @@ public interface RoomMapper {
     RoomEntity toEntity(RoomDto roomDto, @Context UserEntity user);
 
     List<RoomDto> toDtos(List<RoomEntity> entities);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "userEntity", ignore = true)
+    RoomEntity toEntityUpdatedByDto(@MappingTarget RoomEntity roomEntity, RoomDto roomDto);
 }
