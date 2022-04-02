@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,7 +18,7 @@ public class RentalController {
     private final RentalService rentalService;
 
     @PostMapping("/{roomId}/rooms")
-    public ResponseEntity<RentDto> addRoomToRentals(@PathVariable Long roomId, @RequestBody RentDto rentDto) {
+    public ResponseEntity<RentDto> addRoomToRentals(@PathVariable Long roomId, @RequestBody @Valid RentDto rentDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(rentalService.addRoomToRental(roomId, rentDto));
     }
 

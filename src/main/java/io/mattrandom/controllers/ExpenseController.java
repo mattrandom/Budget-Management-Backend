@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -28,17 +29,17 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public ResponseEntity<ExpenseDto> addExpense(@RequestBody ExpenseDto expenseDto) {
+    public ResponseEntity<ExpenseDto> addExpense(@RequestBody @Valid ExpenseDto expenseDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(expenseService.addExpense(expenseDto));
     }
 
     @PutMapping
-    public ResponseEntity<ExpenseDto> updateExpense(@RequestBody ExpenseDto expenseDto) {
+    public ResponseEntity<ExpenseDto> updateExpense(@RequestBody @Valid ExpenseDto expenseDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(expenseService.updateExpense(expenseDto));
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteExpense(@RequestBody ExpenseDto expenseDto) {
+    public ResponseEntity<Void> deleteExpense(@RequestBody @Valid ExpenseDto expenseDto) {
         expenseService.deleteExpense(expenseDto);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

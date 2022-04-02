@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,7 +20,7 @@ public class PropertyController {
     private final PropertyService propertyService;
 
     @PostMapping
-    public ResponseEntity<PropertyDto> addProperty(@RequestBody PropertyDto propertyDto) {
+    public ResponseEntity<PropertyDto> addProperty(@RequestBody @Valid PropertyDto propertyDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(propertyService.addProperty(propertyDto));
     }
 
@@ -45,18 +46,18 @@ public class PropertyController {
     }
 
     @PutMapping
-    public ResponseEntity<PropertyDto> updateProperty(@RequestBody PropertyDto propertyDto) {
+    public ResponseEntity<PropertyDto> updateProperty(@RequestBody @Valid PropertyDto propertyDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(propertyService.updateProperty(propertyDto));
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteProperty(@RequestBody PropertyDto propertyDto) {
+    public ResponseEntity<Void> deleteProperty(@RequestBody @Valid PropertyDto propertyDto) {
         propertyService.deleteProperty(propertyDto);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PostMapping("/{id}/rooms/add")
-    public ResponseEntity<PropertyExtendedDto> addRoomToProperty(@PathVariable Long id, @RequestBody RoomDto roomDto) {
+    public ResponseEntity<PropertyExtendedDto> addRoomToProperty(@PathVariable Long id, @RequestBody @Valid RoomDto roomDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(propertyService.addRoomToProperty(id, roomDto));
     }
 

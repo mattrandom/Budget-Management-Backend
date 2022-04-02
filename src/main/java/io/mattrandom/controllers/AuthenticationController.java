@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -18,12 +20,12 @@ public class AuthenticationController {
     private final CustomUserDetailsService customUserDetailsService;
 
     @GetMapping
-    public ResponseEntity<AuthenticationJwtDto> getAuthToken(@RequestBody AuthenticationUserDto authenticationUserDto) {
+    public ResponseEntity<AuthenticationJwtDto> getAuthToken(@RequestBody @Valid AuthenticationUserDto authenticationUserDto) {
         return ResponseEntity.status(HttpStatus.OK).body(authenticationService.generateAuthToken(authenticationUserDto));
     }
 
     @PostMapping
-    public ResponseEntity<Long> saveUser(@RequestBody AuthenticationUserDto authenticationUserDto) {
+    public ResponseEntity<Long> saveUser(@RequestBody @Valid AuthenticationUserDto authenticationUserDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(customUserDetailsService.saveUser(authenticationUserDto));
     }
 

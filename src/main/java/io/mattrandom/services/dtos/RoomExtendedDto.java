@@ -4,6 +4,7 @@ import io.mattrandom.enums.RoomType;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -12,7 +13,12 @@ import java.util.List;
 public class RoomExtendedDto {
 
     private Long id;
+
+    @NotNull
     private BigDecimal cost;
+
+    @NotNull
     private RoomType roomType;
+
     private List<RentDto> rentsDto;
 }

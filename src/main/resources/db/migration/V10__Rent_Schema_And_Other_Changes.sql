@@ -21,12 +21,6 @@ alter table rents add CONSTRAINT FK_RENTS_ON_USER FOREIGN KEY (user_id) REFERENC
 
 alter table rooms add CONSTRAINT FK_ROOMS_ON_PROPERTY FOREIGN KEY (property_id) REFERENCES properties (id);
 
-alter table properties_rooms drop FOREIGN KEY fk_proroo_on_property_entity;
+alter table properties drop COLUMN rooms;
 
-alter table properties_rooms drop FOREIGN KEY fk_proroo_on_room_entity;
-
-drop table properties_rooms;
-
-alter table properties drop COLUMN single_friendly;
-
-alter table properties drop COLUMN sold;
+alter table properties drop COLUMN single;

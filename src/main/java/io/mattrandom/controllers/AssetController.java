@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -34,18 +35,18 @@ public class AssetController {
     }
 
     @PostMapping
-    public ResponseEntity<AssetDto> addAssets(@RequestBody AssetDto assetDto) {
+    public ResponseEntity<AssetDto> addAssets(@RequestBody @Valid AssetDto assetDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(assetService.addAsset(assetDto));
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteAsset(@RequestBody AssetDto assetDto) {
+    public ResponseEntity<Void> deleteAsset(@RequestBody @Valid AssetDto assetDto) {
         assetService.deleteAsset(assetDto);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping
-    public ResponseEntity<AssetDto> updateAsset(@RequestBody AssetDto assetDto) {
+    public ResponseEntity<AssetDto> updateAsset(@RequestBody @Valid AssetDto assetDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(assetService.updateAsset(assetDto));
     }
 }

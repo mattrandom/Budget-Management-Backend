@@ -5,13 +5,30 @@ import io.mattrandom.exceptions.AppUserInvalidCredentialsException;
 import io.mattrandom.exceptions.AssetFilterQueryParamException;
 import io.mattrandom.exceptions.AssetIncorrectException;
 import io.mattrandom.exceptions.ExpenseFilterQueryParamException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @Override
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
+                                                                  HttpStatus status, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(), "Validation error. Check 'errors' field for details.", "1b78bf56-9882-4cfc-b113-0d20872a3097");
+        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
+            errorResponse.addValidationError(fieldError.getField(), fieldError.getRejectedValue(), fieldError.getDefaultMessage());
+        }
+        return ResponseEntity.unprocessableEntity().body(errorResponse);
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
@@ -35,5 +52,11 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse expenseFilterQueryParamExceptionHandler(ExpenseFilterQueryParamException ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), ex.getErrorCode());
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected ResponseEntity<ErrorResponse> handleAllUncaughtException(Exception exception, WebRequest request) {
+        return ResponseEntity.internalServerError().body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Unknown error occurred", "6da8e862-e2a5-4725-9373-d816d0850130"));
     }
 }
