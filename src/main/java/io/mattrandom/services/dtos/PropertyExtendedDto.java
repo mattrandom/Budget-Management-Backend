@@ -3,9 +3,11 @@ package io.mattrandom.services.dtos;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
-public class PropertyDto {
+public class PropertyExtendedDto {
 
     private Long id;
     private String postalCode;
@@ -13,4 +15,6 @@ public class PropertyDto {
     private String street;
     private String house;
     private Boolean singleFriendly;
+    private Boolean isPropertyRent;
+    private List<RoomDto> roomsDto;
 }

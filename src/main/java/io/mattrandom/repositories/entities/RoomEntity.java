@@ -6,11 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -25,4 +23,22 @@ public class RoomEntity extends AbstractEntity {
 
     @Enumerated(EnumType.STRING)
     private RoomType roomType;
+
+    @OneToMany(
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL,
+            mappedBy = "room",
+            orphanRemoval = true
+    )
+    private List<RentEntity> rents;
+
+    public void addRent(RentEntity rent) {
+        this.rents.add(rent);
+        rent.setRoom(this);
+    }
+
+    public void removeRent(RentEntity rent) {
+        this.rents.remove(rent);
+        rent.setRoom(null);
+    }
 }

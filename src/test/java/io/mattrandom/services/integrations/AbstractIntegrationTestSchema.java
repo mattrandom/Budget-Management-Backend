@@ -153,8 +153,7 @@ public abstract class AbstractIntegrationTestSchema {
                 .postalCode("66-666")
                 .city("BigCity")
                 .street("Long Street")
-                .rooms(2)
-                .single(false)
+                .isSingleFriendly(false)
                 .house("Flat")
                 .userEntity(userEntity)
                 .build();

@@ -53,16 +53,11 @@ class AssetServiceTest {
         //given
         BigDecimal one = BigDecimal.ONE;
 
-//        UserEntity userEntity = UserEntity.builder()
-//                .username("principal")
-//                .build();
-
         AssetEntity assetEntity = AssetEntity.builder()
                 .amount(one)
                 .build();
 
         given(assetRepositoryMock.findByUserEntity(any())).willReturn(List.of(assetEntity));
-//        given(userLoginService.getLoggedUserEntity()).willReturn(userEntity);
 
         //when
         List<AssetDto> assetDtoResult = assetService.getAllAssetsByPrincipal();
@@ -78,10 +73,6 @@ class AssetServiceTest {
         BigDecimal one = BigDecimal.ONE;
         BigDecimal ten = BigDecimal.TEN;
 
-//        UserEntity userEntity = UserEntity.builder()
-//                .username("principal")
-//                .build();
-
         AssetEntity assetEntity = AssetEntity.builder()
                 .amount(one)
                 .build();
@@ -89,7 +80,6 @@ class AssetServiceTest {
                 .amount(ten)
                 .build();
         given(assetRepositoryMock.findByUserEntity(any())).willReturn(List.of(assetEntity, assetEntity2));
-//        given(userLoginService.getLoggedUserEntity()).willReturn(userEntity);
 
         //when
         List<AssetDto> assetDtoResult = assetService.getAllAssetsByPrincipal();

@@ -3,6 +3,7 @@ package io.mattrandom.services.integrations;
 import io.mattrandom.repositories.entities.PropertyEntity;
 import io.mattrandom.repositories.entities.UserEntity;
 import io.mattrandom.services.dtos.PropertyDto;
+import io.mattrandom.services.dtos.PropertyExtendedDto;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -19,8 +20,7 @@ public class PropertyServiceIntegrationTests extends AbstractIntegrationTestSche
                 .postalCode("66-666")
                 .city("BigCity")
                 .street("Long Street")
-                .rooms(2)
-                .single(false)
+                .singleFriendly(false)
                 .house("Flat")
                 .build();
 
@@ -55,8 +55,7 @@ public class PropertyServiceIntegrationTests extends AbstractIntegrationTestSche
                 .postalCode("00-000")
                 .city("New City")
                 .street("New Street")
-                .rooms(3)
-                .single(true)
+                .singleFriendly(true)
                 .house("Flat")
                 .build();
 

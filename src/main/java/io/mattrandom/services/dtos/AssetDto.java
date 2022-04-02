@@ -16,6 +16,4 @@ public class AssetDto {
     private LocalDateTime incomeDate;
     private AssetCategory assetCategory;
     private String description;
-
-//    private PlainAuthenticationUserDto user;
 }

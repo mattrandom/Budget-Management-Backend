@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -20,7 +20,11 @@ public class PropertyEntity extends AbstractEntity {
     private String postalCode;
     private String city;
     private String street;
-    private Integer rooms;
-    private Boolean single;
     private String house;
+    private Boolean isSingleFriendly;
+    private Boolean isSold;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "property_id")
+    private List<RoomEntity> rooms;
 }
