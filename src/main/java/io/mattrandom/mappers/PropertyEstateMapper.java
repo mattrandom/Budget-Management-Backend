@@ -16,7 +16,7 @@ import java.util.List;
 @Mapper(
         componentModel = "spring"
 )
-public interface PropertyMapper {
+public interface PropertyEstateMapper {
 
     PropertyDto toDto(PropertyEntity propertyEntity);
 

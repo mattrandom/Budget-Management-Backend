@@ -1,6 +1,6 @@
 package io.mattrandom.services;
 
-import io.mattrandom.mappers.PropertyMapper;
+import io.mattrandom.mappers.PropertyEstateMapper;
 import io.mattrandom.mappers.RoomMapper;
 import io.mattrandom.repositories.PropertyRepository;
 import io.mattrandom.repositories.RoomRepository;
@@ -22,29 +22,29 @@ import java.util.Optional;
 public class PropertyService {
 
     private final PropertyRepository propertyRepository;
-    private final PropertyMapper propertyMapper;
+    private final PropertyEstateMapper propertyEstateMapper;
     private final UserLoginService userLoginService;
     private final RoomMapper roomMapper;
     private final RoomRepository roomRepository;
 
     public PropertyDto addProperty(PropertyDto propertyDto) {
         UserEntity loggedUserEntity = userLoginService.getLoggedUserEntity();
-        PropertyEntity propertyEntity = propertyMapper.toEntity(propertyDto, loggedUserEntity);
+        PropertyEntity propertyEntity = propertyEstateMapper.toEntity(propertyDto, loggedUserEntity);
         propertyRepository.save(propertyEntity);
-        return propertyMapper.toDto(propertyEntity);
+        return propertyEstateMapper.toDto(propertyEntity);
     }
 
     public List<PropertyDto> getAllProperties() {
         UserEntity loggedUserEntity = userLoginService.getLoggedUserEntity();
         List<PropertyEntity> entities = propertyRepository.findByUserEntity(loggedUserEntity);
-        return propertyMapper.toDtos(entities);
+        return propertyEstateMapper.toDtos(entities);
     }
 
     @Transactional
     public PropertyDto updateProperty(PropertyDto propertyDto) {
         Optional<PropertyEntity> propertyEntityOpt = propertyRepository.findById(propertyDto.getId());
-        propertyEntityOpt.ifPresent(propertyEntity -> propertyMapper.toEntityUpdatedByDto(propertyEntityOpt.get(), propertyDto));
-        return propertyMapper.toDto(propertyEntityOpt.get());
+        propertyEntityOpt.ifPresent(propertyEntity -> propertyEstateMapper.toEntityUpdatedByDto(propertyEntityOpt.get(), propertyDto));
+        return propertyEstateMapper.toDto(propertyEntityOpt.get());
     }
 
     public void deleteProperty(PropertyDto propertyDto) {
@@ -63,13 +63,13 @@ public class PropertyService {
             fetchedProperty.getRooms().add(roomEntity);
         }
 
-        return propertyMapper.toExtendedDto(propertyIdOpt.get());
+        return propertyEstateMapper.toExtendedDto(propertyIdOpt.get());
     }
 
     public List<PropertyExtendedDto> getAllPropertiesWithRooms(Boolean isSold) {
         UserEntity loggedUserEntity = userLoginService.getLoggedUserEntity();
         List<PropertyEntity> entities = propertyRepository.findByUserEntityAndSold(loggedUserEntity, isSold);
-        return propertyMapper.toExtendedDtos(entities);
+        return propertyEstateMapper.toExtendedDtos(entities);
     }
 
     @Transactional
