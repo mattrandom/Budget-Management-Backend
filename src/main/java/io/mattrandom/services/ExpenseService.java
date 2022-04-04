@@ -1,6 +1,7 @@
 package io.mattrandom.services;
 
 import io.mattrandom.enums.FilterSpecificationEnum;
+import io.mattrandom.exceptions.ExpenseNotFoundException;
 import io.mattrandom.mappers.ExpenseMapper;
 import io.mattrandom.repositories.ExpenseRepository;
 import io.mattrandom.repositories.entities.ExpenseEntity;
@@ -46,9 +47,12 @@ public class ExpenseService {
 
     @Transactional
     public ExpenseDto updateExpense(ExpenseDto expenseDto) {
-        Optional<ExpenseEntity> expenseEntity = expenseRepository.findById(expenseDto.getId());
-        expenseEntity.ifPresent(entity -> checkAndUpdate(expenseDto, expenseEntity.get()));
-        return expenseMapper.toDto(expenseEntity.get());
+        ExpenseEntity expenseEntity = expenseRepository.findById(expenseDto.getId())
+                .orElseThrow(() -> new ExpenseNotFoundException(expenseDto.getId()));
+
+        checkAndUpdate(expenseDto, expenseEntity);
+
+        return expenseMapper.toDto(expenseEntity);
 
     }
 

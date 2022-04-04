@@ -61,12 +61,6 @@ public class AssetMapper {
         if (Objects.nonNull(assetEntity.getDescription())) {
             assetDtoBuilder.description(assetEntity.getDescription());
         }
-//        if (Objects.nonNull(assetEntity.getUserEntity())) {
-//            assetDtoBuilder.user(PlainAuthenticationUserDto.builder()
-//                    .id(assetEntity.getUserEntity().getId())
-//                    .username(assetEntity.getUserEntity().getUsername())
-//                    .build());
-//        }
 
         return assetDtoBuilder.build();
     }

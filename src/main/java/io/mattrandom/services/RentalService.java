@@ -1,5 +1,7 @@
 package io.mattrandom.services;
 
+import io.mattrandom.exceptions.RentNotFoundException;
+import io.mattrandom.exceptions.RoomNotFoundException;
 import io.mattrandom.mappers.RentMapper;
 import io.mattrandom.repositories.RentRepository;
 import io.mattrandom.repositories.RoomRepository;
@@ -27,7 +29,8 @@ public class RentalService {
         UserEntity loggedUserEntity = userLoginService.getLoggedUserEntity();
         RentEntity rentEntity = rentMapper.toEntity(rentDto, loggedUserEntity);
         rentEntity.setIsRent(true);
-        RoomEntity roomEntity = roomRepository.findById(roomId).orElseThrow();
+        RoomEntity roomEntity = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RoomNotFoundException(roomId));
         roomEntity.addRent(rentEntity);
         return rentMapper.toDto(rentEntity);
     }
@@ -39,8 +42,10 @@ public class RentalService {
 
     @Transactional
     public RentDto removeRoomFromRental(Long roomId, Long rentId) {
-        RoomEntity roomEntity = roomRepository.findById(roomId).orElseThrow();
-        RentEntity rentEntity = rentRepository.findById(rentId).orElseThrow();
+        RoomEntity roomEntity = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RoomNotFoundException(roomId));
+        RentEntity rentEntity = rentRepository.findById(rentId)
+                .orElseThrow(() -> new RentNotFoundException(rentId));
         roomEntity.removeRent(rentEntity);
         return rentMapper.toDto(rentEntity);
     }

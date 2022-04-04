@@ -29,7 +29,7 @@ public class PropertyExtendedDto {
     @NotNull
     private Boolean singleFriendly;
 
-    private Boolean isPropertyRent;
+    private Boolean isSold;
 
     private List<RoomDto> roomsDto;
 }

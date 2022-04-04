@@ -1,6 +1,7 @@
 package io.mattrandom.services;
 
 import io.mattrandom.enums.RoomType;
+import io.mattrandom.exceptions.RoomNotFoundException;
 import io.mattrandom.mappers.RoomMapper;
 import io.mattrandom.repositories.RoomRepository;
 import io.mattrandom.repositories.entities.RoomEntity;
@@ -37,17 +38,20 @@ public class RoomService {
     }
 
     private RoomDto updateRoom(RoomDto roomDto) {
-        Optional<RoomEntity> roomEntityOpt = roomRepository.findById(roomDto.getId());
-        roomEntityOpt.ifPresent(roomEntity -> roomMapper.toEntityUpdatedByDto(roomEntityOpt.get(), roomDto));
-        return roomMapper.toDto(roomEntityOpt.get());
+        RoomEntity roomEntity = roomRepository.findById(roomDto.getId())
+                .orElseThrow(() -> new RoomNotFoundException(roomDto.getId()));
+        roomMapper.toEntityUpdatedByDto(roomEntity, roomDto);
+        return roomMapper.toDto(roomEntity);
     }
-
 
     @Transactional
     public RoomDto inactivateRoom(Long id) {
-        Optional<RoomEntity> roomEntityOpt = roomRepository.findById(id);
-        roomEntityOpt.ifPresent(roomEntity -> roomEntity.setCost(BigDecimal.ZERO));
-        return roomMapper.toDto(roomEntityOpt.get());
+        RoomEntity roomEntity = roomRepository.findById(id)
+                .orElseThrow(() -> new RoomNotFoundException(id));
+
+        roomEntity.setCost(BigDecimal.ZERO);
+
+        return roomMapper.toDto(roomEntity);
     }
 
     public List<RoomDto> getAllRooms() {

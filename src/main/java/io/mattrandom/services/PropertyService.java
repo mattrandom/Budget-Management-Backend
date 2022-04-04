@@ -1,5 +1,7 @@
 package io.mattrandom.services;
 
+import io.mattrandom.exceptions.PropertyIsNotFoundException;
+import io.mattrandom.exceptions.RoomNotFoundException;
 import io.mattrandom.mappers.PropertyEstateMapper;
 import io.mattrandom.mappers.RoomMapper;
 import io.mattrandom.repositories.PropertyRepository;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -42,28 +45,28 @@ public class PropertyService {
 
     @Transactional
     public PropertyDto updateProperty(PropertyDto propertyDto) {
-        Optional<PropertyEntity> propertyEntityOpt = propertyRepository.findById(propertyDto.getId());
-        propertyEntityOpt.ifPresent(propertyEntity -> propertyEstateMapper.toEntityUpdatedByDto(propertyEntityOpt.get(), propertyDto));
-        return propertyEstateMapper.toDto(propertyEntityOpt.get());
+        PropertyEntity fetchedEntity = propertyRepository.findById(propertyDto.getId())
+                .orElseThrow(() -> new PropertyIsNotFoundException(propertyDto.getId()));
+        PropertyEntity updatedEntity = propertyEstateMapper.toEntityUpdatedByDto(fetchedEntity, propertyDto);
+        return propertyEstateMapper.toDto(updatedEntity);
     }
 
     public void deleteProperty(PropertyDto propertyDto) {
-        Optional<PropertyEntity> propertyEntityOpt = propertyRepository.findById(propertyDto.getId());
-        propertyEntityOpt.ifPresent(propertyRepository::delete);
+        PropertyEntity fetchedEntity = propertyRepository.findById(propertyDto.getId())
+                .orElseThrow(() -> new PropertyIsNotFoundException(propertyDto.getId()));
+        propertyRepository.delete(fetchedEntity);
     }
 
     @Transactional
     public PropertyExtendedDto addRoomToProperty(Long id, RoomDto roomDto) {
         UserEntity loggedUserEntity = userLoginService.getLoggedUserEntity();
-        Optional<PropertyEntity> propertyIdOpt = propertyRepository.findById(id);
+        PropertyEntity fetchedPropertyEntity = propertyRepository.findById(id)
+                .orElseThrow(() -> new PropertyIsNotFoundException(id));
 
-        if (propertyIdOpt.isPresent()) {
-            RoomEntity roomEntity = roomMapper.toEntity(roomDto, loggedUserEntity);
-            PropertyEntity fetchedProperty = propertyIdOpt.get();
-            fetchedProperty.getRooms().add(roomEntity);
-        }
+        RoomEntity roomEntity = roomMapper.toEntity(roomDto, loggedUserEntity);
+        fetchedPropertyEntity.getRooms().add(roomEntity);
 
-        return propertyEstateMapper.toExtendedDto(propertyIdOpt.get());
+        return propertyEstateMapper.toExtendedDto(fetchedPropertyEntity);
     }
 
     public List<PropertyExtendedDto> getAllPropertiesWithRooms(Boolean isSold) {
@@ -74,14 +77,13 @@ public class PropertyService {
 
     @Transactional
     public void deleteRoomFromProperty(Long propertyId, Long roomId) {
-        Optional<PropertyEntity> propertyOpt = propertyRepository.findById(propertyId);
-        Optional<RoomEntity> roomOpt = roomRepository.findById(roomId);
+        PropertyEntity fetchedPropertyEntity = propertyRepository.findById(propertyId)
+                .orElseThrow(() -> new PropertyIsNotFoundException(propertyId));
 
-        if (propertyOpt.isPresent()) {
-            PropertyEntity propertyEntity = propertyOpt.get();
-            RoomEntity roomEntity = roomOpt.get();
-            propertyEntity.getRooms().remove(roomEntity);
-        }
+        RoomEntity fetchedRoomEntity = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RoomNotFoundException(roomId));
+
+        fetchedPropertyEntity.getRooms().remove(fetchedRoomEntity);
     }
 
     @Transactional
